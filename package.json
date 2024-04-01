@@ -1,0 +1,31 @@
+{
+  "name": "gameprofiler",
+  "version": "0.0.1",
+  "description": "A game profiler creator by topocai ",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "game",
+    "games",
+    "igdb",
+    "profiler",
+    "profile",
+    "tracking",
+    "tracker"
+  ],
+  "author": "Topocai",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "1.6.8",
+    "dotenv": "^16.4.5",
+    "express": "4.19.2",
+    "mongoose": "8.2.4",
+    "morgan": "1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
