@@ -4,6 +4,7 @@ const express = require('express')
 
 const mongoose = require('mongoose')
 const morgan = require('morgan')
+const cors = require('cors')
 
 const Twitch_Auth = () => {
     const promise = axios.post(`https://id.twitch.tv/oauth2/token?client_id=${process.env.TWITCH_CLIENT_ID}&client_secret=${process.env.TWITCH_CLIENT_SECRET}&grant_type=client_credentials`)
@@ -24,6 +25,7 @@ function setBearerToken() {
 setBearerToken()
 
 const app = express()
+app.use(cors())
 app.use(express.json())
 
 morgan.token('reqBody', (req) => JSON.stringify(req.body))
@@ -42,6 +44,13 @@ const check_bearer = (req, res, next) => {
   }
   next()
 }
+
+app.get('/api/games/cover/:id', check_bearer, (req, res) => {
+  const id = req.params.id
+  igbdbRequests.Get_Cover(bearer_access_token, id, { cover_size: 'screenshot_huge' })
+  .then((queryResult) => res.send(queryResult))
+  .catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
+})
 
 app.get('/api/games', check_bearer, (req, res) => {
   console.log('GET games | query:', req.query)
@@ -81,7 +90,28 @@ mongoose.connect(url)
 .then(() => console.log('[MONGOOSE] Connected to MongoDB'))
 .catch(err => console.error('[MONGOOSE] Error in conection', err))
 
-const UserModel = require('./models/User.js')
+const UserModel = require('./models/User.js');
+const User = require('./models/User.js');
+
+app.get('/api/profile/genders', (req, res) => {
+  const { genders } = require('./variables.js')
+  
+  res.json(Object.entries(genders).map(([key, value]) => {
+    const newObject = {}
+    newObject[key] = value
+    return newObject
+  }))
+})
+
+app.get('/api/profile/platforms', (req, res) => {
+  const { plataforms } = require('./variables.js')
+  
+  res.json(Object.entries(plataforms).map(([key, value]) => {
+    const newObject = {}
+    newObject[key] = value
+    return newObject
+  }))
+})
 
 app.post('/api/user', (req, res) => {
   const body = req.body;
@@ -110,11 +140,10 @@ app.post('/api/user', (req, res) => {
         birthday: null,
         created_at: Date.now(),
         games: {
-          played: [],
           finished: [],
           playing: [],
-          on_hold: [],
           abandoned: [],
+          on_hold: [],
           wishlist: [],
           favorites: []
         }
@@ -126,6 +155,75 @@ app.post('/api/user', (req, res) => {
     .catch((error) => res.status(400).json({error: error.message}))
   })
 })
+
+const check_new_user_data = (fn) => {
+
+  return function (req, res, next) {
+    const { genders, plataforms } = require('./variables.js')
+
+    console.log(req.body)
+
+    const body = req.body
+    const genre = genders[body.user_genre] ? genders[body.user_genre] : null
+
+    let platform = body.user_platform ? body.user_platform.map(platform => plataforms[platform]) : null
+    platform = platform && platform.length > 0 ? platform : null
+
+    let birthday = body.birthday ? body.birthday : null
+
+    const games = body.games ? body.games : null
+
+    const newUserData = {
+      user_genre: genre,
+      user_platform: platform,
+      birthday: birthday,
+      games: games
+    }
+
+    req.body.newUserData = newUserData
+
+    fn(req, res, next)
+  }
+}
+
+app.put('/api/user/:id', check_new_user_data(async function(req, res) {
+  const id = req.params.id
+  const body = req.body
+
+  const newUserData = body.newUserData
+
+  UserModel.findById(id).then(user => {
+    if(!user) {
+      return res.status(404).json({error: 'User not found'})
+    }
+
+    Object.keys(newUserData).forEach(key => {
+      const value = newUserData[key]
+      if(value != null) {
+        console.log(`The key ${key} has a change of ${value}`)
+        if(key == 'games') {
+          Object.keys(user.UserData.games).forEach(category => {
+            if(newUserData.games[category] != null) {
+              const gamesSaved = user.UserData.games[category]
+              const gamesToSave = newUserData.games[category].filter(game => !gamesSaved.includes(game))
+              newUserData.games[category] = gamesToSave.concat(gamesSaved)
+              console.log("The category", category, "has a change of", newUserData.games[category])
+            } else {
+              newUserData.games[category] = []
+            }
+          })
+        }
+      } else {
+        newUserData[key] = user[key]
+      }
+    })
+    console.log("Finished new data", newUserData)
+    user.UserData = newUserData
+    UserModel.findByIdAndUpdate(id, {...user}, { strict: true, new: true })
+    .then((savedUser) => res.json(savedUser))
+    .catch((error) => res.status(400).json({error: error.message}))
+  })
+}))
 
 app.listen(process.env.PORT)
 
