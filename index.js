@@ -103,7 +103,7 @@ app.get('/api/profile/genders', (req, res) => {
   }))
 })
 
-app.get('/api/profile/platforms', (req, res) => {
+app.get('/api/profile/plataforms', (req, res) => {
   const { plataforms } = require('./variables.js')
   
   res.json(Object.entries(plataforms).map(([key, value]) => {
@@ -226,30 +226,3 @@ app.put('/api/user/:id', check_new_user_data(async function(req, res) {
 }))
 
 app.listen(process.env.PORT)
-
-
-/*
-const user = {
-  username: 'topocai',
-  password: 'password',
-  displayName: 'Topocai',
-  email: 'top@example.com',
-  id: '12345'
-}
-
-const userData = {
-  id: user.id,
-  user_genre: '',
-  user_platform: '',
-  birthday: Date,
-  created_at: Date,
-  games: {
-    played: [],
-    finished: [],
-    playing: [],
-    on_hold: [],
-    abandoned: [],
-    wishlist: [],
-    favorites: []
-  }
-}*/
