@@ -1,24 +1,29 @@
 /* eslint-disable react/prop-types */
 import './App.css'
 import services from './services/requests'
+import ProfileForm from './components/profileEdit'
+import SimpleGameCard from './components/simpleGameCard'
 
-const CustomDataList = ({ options, summary }) => {
-  return (
-    <details>
-      <summary>{summary}</summary>
-      <div className='datalist-options-container'>
-        {options.map((option) => <button key={option[0]} onClick={() => console.log(option[1])}>{option[1]}</button>)}
-      </div>
-      
-    </details>
-  )
-}
+import { useState, useEffect } from 'react'
 
 const App = () => {
+  const [game, setGame] = useState({})
+  const [cover, setCover] = useState()
+
+  function getGame() {
+    services.get_random_games()
+    .then(game => {
+      setGame(game[0])
+      services.get_cover(game[0].id).then(cover => setCover(cover))
+    })
+  }
+
+  useEffect(getGame, [])
 
   return (
     <>
-      <CustomDataList options={Object.entries(genders)} summary="Genders" />
+      <ProfileForm gender_get={services.get_genders} plataforms_get={services.get_plataforms} />
+      <SimpleGameCard game={game} cover={cover}/>
     </>
   )
 }

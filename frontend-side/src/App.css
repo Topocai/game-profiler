@@ -1,3 +1,11 @@
 article {
     margin-top: 20px;
 }
+
+.react-datepicker-popper{
+    scale: 0.8
+}
+
+.react-datepicker-wrapper {
+    max-width: 100%;
+}
