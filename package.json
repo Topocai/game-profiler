@@ -4,7 +4,7 @@
   "description": "A game profiler creator by topocai ",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "cross-env NODE_ENV=dev nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -21,8 +21,10 @@
   "dependencies": {
     "axios": "1.6.8",
     "cors": "2.8.5",
+    "cross-env": "7.0.3",
     "dotenv": "^16.4.5",
     "express": "4.19.2",
+    "express-async-errors": "^3.1.1",
     "mongoose": "8.2.4",
     "morgan": "1.10.0"
   },
