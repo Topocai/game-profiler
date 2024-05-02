@@ -1,0 +1,7 @@
+DELETE http://localhost:3000/api/user/66333f36a53970918c58bef5/game
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImR1bW15IiwiaWQiOiI2NjMzM2YzNmE1Mzk3MDkxOGM1OGJlZjUiLCJpYXQiOjE3MTQ2ODQwMzQsImV4cCI6MTcxNDY4NDkzNH0.k8Cct6YwzSZz_3yjbE-lRlhGCAz-G9F5N6Bo7fKV9zc
+
+{
+    "gameId": "4445"
+}

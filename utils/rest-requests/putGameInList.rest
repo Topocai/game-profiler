@@ -1,0 +1,7 @@
+POST http://localhost:3000/api/user/lists/66330b455afb7154c3eaa636
+content-type: application/json
+
+{
+    "gameId": "131913",
+    "listToAdd": "favorites"
+}

@@ -1,76 +1,71 @@
-const BASE_FIELDS = "name,id,url,first_release_date,summary,genres"
+const BASE_FIELDS = 'name,id,url,first_release_date,summary,genres'
 
-const BasicFetch = (bearer_access_token, type, {fields = "*", limit=10, condition, search }) => {
-    let bodyField = `fields ${fields}${type == "games" ? ",parent_game" : ""}; limit ${limit};`
-    bodyField += condition ? ` where ${condition};` : ""
-    bodyField += search ? ` search "${search}";` : ""
+const IGDBUrl = 'https://api.igdb.com/v4/'
 
-    console.log(bodyField)
-    return new Promise((resolve, reject) => {
-        const promise = fetch(
-            "https://api.igdb.com/v4/" + type,
-            { method: 'POST',
-              headers: {
-                'Accept': 'application/json',
-                'Client-ID': process.env.TWITCH_CLIENT_ID,
-                'Authorization': `Bearer ${bearer_access_token}`,
-              },
-              body: bodyField
-          })
-          promise.then((response) => {
-            if(type == "games") {
-              response.json()
-              .then((data) => {
-                //If the first search has a parent put the parent on the first element
-                console.log(data)
-                if(data[0].parent_game) {
-                  Get_GameById(bearer_access_token, data[0].parent_game, { queryFields: BASE_FIELDS })
-                  .then((queryResult) => {
-                    const newData = data
-                    newData.unshift(queryResult[0])
-                    return resolve(newData)
-                  })      
-                } else {
-                  return resolve(data)
-                }
-              })
-            } else {
-              return resolve(response.json())
-            }   
-          })
-          promise.catch((error) => {
-            return reject(error)
-          })
-    })
+const BaseRequest = async (bearerAccessToken, type, { fields = '*', limit = 10, condition, search }) => {
+  let bodyField = `fields ${fields}${type === 'games' ? ',parent_game' : ''}; limit ${limit};`
+  bodyField += condition ? ` where ${condition};` : ''
+  bodyField += search ? ` search "${search}";` : ''
+
+  try {
+    const response = await fetch(
+      IGDBUrl + type,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Client-ID': process.env.TWITCH_CLIENT_ID,
+          Authorization: `Bearer ${bearerAccessToken}`
+        },
+        body: bodyField
+      }
+    )
+    const data = await response.json()
+    const resolveData = data
+
+    if (type === 'games') {
+      if (data[0].parent_game) {
+        const parentGame = await GetGameById(bearerAccessToken, data[0].parent_game, { queryFields: BASE_FIELDS })
+        if (parentGame[0] !== undefined) {
+          resolveData.unshift(parentGame[0])
+        }
+      }
+    }
+
+    return resolveData
+  } catch (error) {
+    console.log(error)
+    return error
+  }
 }
 
-const Get_GameById = (bearer_access_token, game_id, { queryFields } ) => {
-  const fields = queryFields ? queryFields + `,${BASE_FIELDS}`: BASE_FIELDS
-  const queryResult = BasicFetch(bearer_access_token, "games", { fields: fields, condition: `id = ${game_id}`, limit: 1 })
+const GetGameById = (bearerAccessToken, gameId, { queryFields }) => {
+  const fields = queryFields ? queryFields + `,${BASE_FIELDS}` : BASE_FIELDS
+  const queryResult = BaseRequest(bearerAccessToken, 'games', { fields, condition: `id = ${gameId}`, limit: 1 })
   return queryResult
 }
 
-const Get_Games = (bearer_access_token, { queryFields, limit }) => {
-  const fields = queryFields ? queryFields + `,${BASE_FIELDS}`: BASE_FIELDS
-  const queryResult = BasicFetch(bearer_access_token, "games", {fields: fields, limit: limit})
-  
+const GetGames = (bearerAccessToken, { queryFields, limit }) => {
+  const fields = queryFields ? queryFields + `,${BASE_FIELDS}` : BASE_FIELDS
+  const queryResult = BaseRequest(bearerAccessToken, 'games', { fields, limit })
+
   return queryResult
 }
 
-const Get_GameByName = (bearer_access_token, name) => {
-    console.log("Get by name:", name)
-    const queryResult = BasicFetch(bearer_access_token, "games", { fields: BASE_FIELDS, search: name, limit: 3 })
+const GetGameByName = (bearerAccessToken, name) => {
+  console.log('Get by name:', name)
+  const queryResult = BaseRequest(bearerAccessToken, 'games', { fields: BASE_FIELDS, search: name, limit: 3 })
 
-    return queryResult
+  return queryResult
 }
 
 /**
  * Retrieves the cover URL of a game using the provided bearer access token and game ID.
  *
- * @param {string} bearer_access_token - The bearer access token for authentication
- * @param {string} game_id - The ID of the game
+ * @param {string} bearerAccessToken - The bearer access token for authentication
+ * @param {string} gameId - The ID of the game
  * @param {Object} options - An object containing optional parameters:
- *   @param {string} cover_size - The size of the cover image (default is 'thumb'). Available sizes are:
+ *   @param {string} coverSize - The size of the cover image (default is 'thumb'). Available sizes are:
  *     - 'cover_small'
  *     - 'screenshot_med'
  *     - 'cover_big'
@@ -83,35 +78,28 @@ const Get_GameByName = (bearer_access_token, name) => {
  *     - '1080p'
  * @return {Promise<string>} A promise that resolves with the cover URL, or rejects with an error
  */
-const Get_Cover = (bearer_access_token, game_id, { cover_size='thumb' }) => {
-  let coverUrl;
-  console.log("Get cover:", game_id, cover_size)
-  return new Promise((resolve, reject) => {
-    BasicFetch(bearer_access_token, "covers", {fields: "url", condition: `game = ${game_id}`})
-    .then((queryResult) => {
-        const sizes = [
-        'cover_small',
-        'screenshot_med',
-        'cover_big',
-        'logo_med',
-        'screenshot_big',
-        'screenshot_huge',
-        'thumb',
-        'micro',
-        '720p',
-        '1080p'
-        ]
+const GetCover = async (bearerAccessToken, gameId, { coverSize = 'thumb' }) => {
+  console.log('Get cover:', gameId, coverSize)
 
-        if (sizes.indexOf(cover_size) === -1) 
-            cover_size = sizes[0]
+  const queryResult = await BaseRequest(bearerAccessToken, 'covers', { fields: 'url', condition: `game = ${gameId}` })
+  const sizes = [
+    'cover_small',
+    'screenshot_med',
+    'cover_big',
+    'logo_med',
+    'screenshot_big',
+    'screenshot_huge',
+    'thumb',
+    'micro',
+    '720p',
+    '1080p'
+  ]
 
-        coverUrl = queryResult[0].url.replace("t_thumb", `t_${cover_size}`)
-        resolve(coverUrl)
-    })
-    .catch((error) => {
-        reject(error)
-    })
-  })
+  if (sizes.indexOf(coverSize) === -1) { coverSize = sizes[0] }
+
+  const coverUrl = queryResult.lenght > 0 ? queryResult[0].url.replace('t_thumb', `t_${coverSize}`) : 'No cover found'
+
+  return coverUrl
 }
 
-module.exports = { Get_GameById, Get_Games, Get_GameByName, Get_Cover }
+module.exports = { GetGameById, GetGames, GetGameByName, GetCover, BaseRequest }

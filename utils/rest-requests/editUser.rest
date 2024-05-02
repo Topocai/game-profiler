@@ -1,0 +1,8 @@
+PUT http://localhost:3000/api/user/66333f36a53970918c58bef5
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImR1bW15IiwiaWQiOiI2NjMzM2YzNmE1Mzk3MDkxOGM1OGJlZjUiLCJpYXQiOjE3MTQ2MzUzMzAsImV4cCI6MTcxNDYzNjIzMH0.kmK6cz2o2sUbnkSrFbN2SNy3LRl2KR-AZxmr9FbFNkA
+
+{
+    "user": "newdisplay",
+    "email": "Female@gmail.com"
+}
