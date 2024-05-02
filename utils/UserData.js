@@ -3,7 +3,7 @@
  *
  */
 function UserData (userId) {
-  this.user = userId
+  this.user_id = userId
   this.user_gender = null
   this.user_platform = []
   this.birthday = null

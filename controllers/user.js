@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt')
 const middlewares = require('../utils/middlewares')
 
 const getUserDataModel = async (id, res) => {
-  const userData = await UserDataModel.findOne({ user: id })
+  const userData = await UserDataModel.findOne({ user_id: id })
   if (!userData) {
     const userDataTemplate = new UserData(id)
     const userData = new UserDataModel(userDataTemplate)
@@ -56,7 +56,7 @@ userRouter.post('/', async (req, res) => {
     UserData: userData.id
   })
 
-  userData.user = user.id
+  userData.user_id = user.id
 
   // Save and response
   await userData.save()
@@ -66,30 +66,36 @@ userRouter.post('/', async (req, res) => {
 
 userRouter.use(middlewares.tokenVerify)
 
+// Modify user values (displayName and email)
 userRouter.put('/:id', async (req, res) => {
   const id = req.params.id
-  const { userLogin, user, email } = req.body
+  const body = req.body
 
-  if (userLogin.id !== id) {
+  if (body.userLogin.id !== id) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
-  if (user == null && email == null) {
+  if (body.user == null && body.email == null) {
     return res.status(400).json({ error: 'Missing user or email' })
   }
 
-  const userData = await getUserModel(id, res)
+  const user = await getUserModel(id, res)
 
-  await userData.updateOne({
-    displayName: user || userData.displayName,
-    email: email || userData.email
+  await user.updateOne({
+    displayName: body.user || user.displayName,
+    email: body.email || user.email
   })
   return res.status(200).json(await User.findById(id).populate('UserData'))
 })
 
+// Add a game to a list of user data
 userRouter.post('/lists/:id', async (req, res) => {
   const id = req.params.id
   const body = req.body
+
+  if (body.userLogin.id !== id) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
 
   if (body.gameId == null) {
     return res.status(400).json({ error: 'Missing gameId' })
@@ -113,9 +119,14 @@ userRouter.post('/lists/:id', async (req, res) => {
   }
 })
 
+// Add a gameData of a user
 userRouter.post('/:id/game', async (req, res) => {
   const id = req.params.id
   const body = req.body
+
+  if (body.userLogin.id !== id) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
 
   if (body.gameId == null) {
     return res.status(400).json({ error: 'Missing gameId' })
@@ -146,9 +157,14 @@ userRouter.post('/:id/game', async (req, res) => {
   res.status(201).json(gameData)
 })
 
+// Modify game Data of a user
 userRouter.put('/:id/game/', async (req, res) => {
   const id = req.params.id
   const body = req.body
+
+  if (body.userLogin.id !== id) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
 
   if (body.gameId == null) {
     return res.status(400).json({ error: 'Missing gameId' })
@@ -169,6 +185,36 @@ userRouter.put('/:id/game/', async (req, res) => {
 
   const newGameData = await UserGameDataModel.findByIdAndUpdate(gameData.id, gameDataTemplate, { new: true })
   return res.status(200).json(newGameData)
+})
+
+// Delete game Data of a user
+userRouter.delete('/:id/game', async (req, res) => {
+  const id = req.params.id
+  const body = req.body
+
+  if (body.userLogin.id !== id) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+
+  if (body.gameId == null) {
+    return res.status(400).json({ error: 'Missing gameId' })
+  }
+
+  // Search the game Data doc
+  const userGameData = await UserGameDataModel.findOne({ user_id: id, game_id: body.gameId })
+  if (!userGameData) {
+    return res.status(404).json({ error: 'Game data not found' })
+  }
+
+  // Search the userData doc for removed gameData from the list
+  const userData = await UserDataModel.findOne({ user_id: id })
+  await userData.updateOne({
+    userGamesData: userData.userGamesData.filter(id => id.toString() !== userGameData.id.toString())
+  })
+
+  // Delete the gameData doc
+  await UserGameDataModel.deleteOne({ _id: userGameData.id })
+  return res.status(204).end()
 })
 
 module.exports = userRouter

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const UserDataSchema = new mongoose.Schema({
-  user: {
+  user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },

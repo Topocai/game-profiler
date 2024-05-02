@@ -54,11 +54,15 @@ const tokenVerify = (req, res, next) => {
   const token = authorization && authorization.toLowerCase().startsWith('bearer ') ? authorization.substring(7) : null
 
   if (token) {
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-    if (!decodedToken.id) {
-      return res.status(401).send({ error: 'invalid token sd' }).end() // or redirect to login
-    } else {
-      req.body.userLogin = { id: decodedToken.id, username: decodedToken.username }
+    try {
+      const decodedToken = jwt.verify(token, process.env.SECRET)
+      if (!decodedToken.id) {
+        return res.status(401).send({ error: 'invalid token sd' }).end() // or redirect to login
+      } else {
+        req.body.userLogin = { id: decodedToken.id, username: decodedToken.username }
+      }
+    } catch (err) {
+      return res.status(401).send({ error: 'invalid token' }).end()
     }
   } else {
     return res.status(401).send({ error: 'invalid authorization, make sure you type "bearer <token>" ;)' }).end()
