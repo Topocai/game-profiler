@@ -1,18 +1,11 @@
 const mongoose = require('mongoose')
-const variables = require('../variables')
 
 const UserDataSchema = new mongoose.Schema({
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  user_gender: {
-    type: String,
-    enum: {
-      values: [Object.values(variables.genders).map((gender) => gender.display)],
-      message: '{VALUE} not supported'
-    }
-  },
+  user_gender: String,
   user_platform: Array,
   birthday: {
     type: Date,
