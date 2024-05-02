@@ -4,13 +4,13 @@ const igbdbRequests = require('../igdb/requests.js')
 gamesRouter.get('/cover/:id', async (req, res) => {
   const id = req.params.id
 
-  const data = await igbdbRequests.Get_Cover(req.body.igdb_token, id, { cover_size: 'screenshot_huge' })
+  const data = await igbdbRequests.GetCover(req.body.igdb_token, id, { cover_size: 'screenshot_huge' })
 
   res.send(data)
 
-  //.catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
+  // .catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
 })
-  
+
 gamesRouter.get('/', async (req, res) => {
   console.log('GET games | query:', req.query)
 
@@ -18,28 +18,28 @@ gamesRouter.get('/', async (req, res) => {
 
   const fields = req.query.fields ? req.query.fields : null
   const limit = req.query.limit ? Number(req.query.limit) : 10
-    
-  const data = await igbdbRequests.Get_Games(req.body.igdb_token, { queryFields: fields, limit: limit })
+
+  const data = await igbdbRequests.GetGames(req.body.igdb_token, { queryFields: fields, limit })
   res.send(data)
-  //.catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
+  // .catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
 })
-  
+
 gamesRouter.get('/:id', async (req, res) => {
   const id = req.params.id
-  
+
   const fields = req.query.fields ? req.query.fields : null
-  
-  const data = await igbdbRequests.Get_GameById(req.body.igdb_token, id, { queryFields: fields })
+
+  const data = await igbdbRequests.GetGameById(req.body.igdb_token, id, { queryFields: fields })
   res.send(data)
-  //.catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
+  // .catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
 })
-  
+
 gamesRouter.get('/search/:name', async (req, res) => {
   const name = req.params.name
-  
-  const data = await igbdbRequests.Get_GameByName(req.body.igdb_token, name)
+
+  const data = await igbdbRequests.GetGameByName(req.body.igdb_token, name)
   res.send(data)
-  //.catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
+  // .catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
 })
 
 module.exports = gamesRouter

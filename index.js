@@ -1,9 +1,9 @@
-const app = require('./app.js');
-const config = require('./utils/config.js');
+const app = require('./app.js')
+const config = require('./utils/config.js')
 
-app.listen(config.PORT, () => console.log(`Listening on port ${config.PORT}`))  
+app.listen(config.PORT, () => console.log(`Listening on port ${config.PORT}`))
 
-////////////////////////////////////////////////////////////USER API ROUTES////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////USER API ROUTES////////////////////////////////////////////////////////
 
 /*
 const UserModel = require('./models/User.js');
@@ -11,7 +11,7 @@ const User = require('./models/User.js');
 
 app.get('/api/profile/genders', (req, res) => {
   const { genders } = require('./variables.js')
-  
+
   res.json(Object.entries(genders).map(([key, value]) => {
     const newObject = {}
     newObject[key] = value
@@ -21,7 +21,7 @@ app.get('/api/profile/genders', (req, res) => {
 
 app.get('/api/profile/plataforms', (req, res) => {
   const { plataforms } = require('./variables.js')
-  
+
   res.json(Object.entries(plataforms).map(([key, value]) => {
     const newObject = {}
     newObject[key] = value
@@ -38,7 +38,7 @@ app.post('/api/user', (req, res) => {
   if(!body.username || !body.password || !body.displayName || !body.email) {
     return res.status(400).json({error: 'Missing required fields'})
   }
-  
+
   UserModel.find({})
   .then((users) => {
     if(users.find(user => user.username === body.username || user.email === body.email)) {
@@ -141,5 +141,4 @@ app.put('/api/user/:id', check_new_user_data(async function(req, res) {
     .then((savedUser) => res.json(savedUser))
     .catch((error) => res.status(400).json({error: error.message}))
   })
-}))*/
-
+})) */
