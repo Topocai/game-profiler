@@ -19,10 +19,9 @@ const SimpleGameCard = ({ game, cover }) => {
      * url
      * }
      */
-  if (game === undefined) return null
+  if (game === undefined || game === null) return null
   const coverUrl = cover !== 'No cover found' ? cover : 'https://placehold.co/500x900'
-  const gameSummary = game.summary.length > 100 ? <p>{game.summary.slice(0, 100)}<a href={game.url}> ...</a></p> : <p>{game.summary}</p>
-  console.log(game.summary.length)
+  const gameSummary = game.summary && game.summary.length > 100 ? <p>{game.summary.slice(0, 100)}<a href={game.url}> ...</a></p> : <p>{game.summary}</p>
   const cardStyle = {
     backgroundImage: `url(${coverUrl})`
   }
