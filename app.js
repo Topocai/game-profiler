@@ -23,12 +23,14 @@ mongoose.connect(url)
 const gamesRouter = require('./controllers/games')
 const userRouter = require('./controllers/user')
 const loginRouter = require('./controllers/login')
+const variablesRouter = require('./controllers/variables')
 
 app.use(middlewares.requestLogger)
 
 app.use('/api/games', middlewares.getIgdbToken, gamesRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/user', userRouter)
+app.use('/api/variables', variablesRouter)
 
 app.use(middlewares.unknownEndpoint)
 app.use(middlewares.errorHandler)

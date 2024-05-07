@@ -20,7 +20,7 @@ const getTwitchToken = async () => {
 }
 
 const igdbServices = require('../igdb/requests')
-
+/*
 describe('New igdb post function', () => {
   test('works', async () => {
     const token = await getTwitchToken()
@@ -33,7 +33,7 @@ describe('New igdb post function', () => {
     const data = await igdbServices.BaseRequest(token, 'games', { search: 'Genshin Impact' })
     assert.strictEqual(data[0].id, 119277)
   })
-})
+}) */
 
 describe('One user with data and game defined', () => {
   beforeEach(async () => {

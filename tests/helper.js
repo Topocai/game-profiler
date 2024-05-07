@@ -8,9 +8,10 @@ const dummyUser = {
 }
 
 const dummyUserData = {
-  user_genre: 'Female',
-  user_platform: [variables.plataforms.PC],
-  birthday: Date.now(),
+  user_gender: variables.genders.FEMALE.id,
+  user_avatar: 'https://imgbox.com/ctmigkfs',
+  user_platform: [variables.plataforms.PC.id],
+  birthday: new Date('2006-06-06'),
   created_at: Date.now(),
   gamesList: {
     finished: [4445],
@@ -25,7 +26,7 @@ const dummyGameUserData = {
   started_at: null,
   finished_at: null,
   hours_played: 12,
-  platform_played: [variables.plataforms.PC],
+  platform_played: [variables.plataforms.PC.id],
   review: 'Es una cagada de juego',
   favorite: false
 }

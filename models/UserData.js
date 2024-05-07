@@ -5,17 +5,10 @@ const UserDataSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  user_avatar: String,
   user_gender: String,
   user_platform: Array,
-  birthday: {
-    type: Date,
-    validate: {
-      validator: function (v) {
-        return /^([1][12]|[0]?[1-9])[/-]([3][01]|[12]\d|[0]?[1-9])[/-](\d{4}|\d{2})$/.test(v)
-      },
-      message: props => `${props.value} is not a valid email!`
-    }
-  },
+  birthday: Date,
   created_at: Date,
   gamesList: Object,
   userGamesData: [

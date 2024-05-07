@@ -4,6 +4,7 @@
  */
 function UserData (userId) {
   this.user_id = userId
+  this.user_avatar = null
   this.user_gender = null
   this.user_platform = []
   this.birthday = null
@@ -23,6 +24,7 @@ function UserData (userId) {
 /**
  * Constructor function for UserGameData class.
  */
+
 function UserGameData (gameId) {
   this.game_id = gameId
   this.status = null
