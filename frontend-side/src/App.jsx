@@ -1,29 +1,33 @@
 /* eslint-disable react/prop-types */
 import './App.css'
-import services from './services/requests'
-import ProfileForm from './components/profileEdit'
-import SimpleGameCard from './components/simpleGameCard'
+import CardGrid from './components/CardGrid'
+
+import gameServices from './services/games'
 
 import { useState, useEffect } from 'react'
 
 const App = () => {
-  const [game, setGame] = useState({})
-  const [cover, setCover] = useState()
+  const [games, setGames] = useState([])
 
-  function getGame() {
-    services.get_random_games()
-    .then(game => {
-      setGame(game[0])
-      services.get_cover(game[0].id).then(cover => setCover(cover))
-    })
-  }
+  useEffect(() => {
+    async function getGame () {
+      const gamesResult = await gameServices.getGames()
 
-  useEffect(getGame, [])
+      let covers = gamesResult.map(game => gameServices.getCover(game.id))
+      covers = await Promise.all(covers)
+
+      gamesResult.forEach((game, index) => {
+        game.cover = covers[index]
+        gamesResult[index] = game
+      })
+      setGames(gamesResult)
+    }
+    getGame()
+  }, [])
 
   return (
     <>
-      <ProfileForm gender_get={services.get_genders} plataforms_get={services.get_plataforms} />
-      <SimpleGameCard game={game} cover={cover}/>
+      <CardGrid games={games} />
     </>
   )
 }

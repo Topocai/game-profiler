@@ -1,56 +1,53 @@
-import { useState, useEffect } from "react"
-import CustomDataList from "./CustomDatalist"
+import { useState, useEffect } from 'react'
+import CustomDataList from './CustomDatalist'
 import DatePicker from 'react-datepicker'
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css'
 const ProfileForm = ({ gender_get, plataforms_get }) => {
-    const [genders, setGenders] = useState()
-    const [plataforms, setPlataforms] = useState()
+  const [genders, setGenders] = useState()
+  const [plataforms, setPlataforms] = useState()
 
-    const [displayName, setDisplayName] = useState('')
-    const [plataformsSelected, setPlataformsSelected] = useState([])
-    const [genderSelected, setGendersSelected] = useState()
-    const [birthday, setBirthday] = useState(null)
-    
-    const handleChange = (event) => {
-        setDisplayName(event.target.value)
+  const [displayName, setDisplayName] = useState('')
+  const [plataformsSelected, setPlataformsSelected] = useState([])
+  const [genderSelected, setGendersSelected] = useState()
+  const [birthday, setBirthday] = useState(null)
+
+  const handleChange = (event) => {
+    setDisplayName(event.target.value)
+  }
+
+  const setOptions = () => {
+    gender_get()
+      .then(response => setGenders(response))
+    plataforms_get()
+      .then(response => setPlataforms(response))
+  }
+
+  useEffect(setOptions, [])
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    const body = {
+      displayName,
+      gender: genderSelected,
+      plataforms: plataformsSelected,
+      birthday
     }
+    console.log(body)
+  }
 
-    const setOptions = () => {
-        gender_get()
-        .then(response => setGenders(response))
-        plataforms_get()
-        .then(response => setPlataforms(response))
-    }
+  const handleGender = (value) => {
+    setGendersSelected(value)
+  }
 
-    useEffect(setOptions, [])
+  const handlePlataforms = (value) => {
+    if (plataformsSelected.includes(value)) { setPlataformsSelected([...plataformsSelected].filter((plataform) => plataform !== value)) } else { setPlataformsSelected([...plataformsSelected].concat(value)) }
+  }
 
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        const body = {
-            displayName,
-            gender: genderSelected,
-            plataforms: plataformsSelected,
-            birthday
-        }
-        console.log(body)
-    }
+  if (genders === undefined) return
 
-    const handleGender = (value) => {
-        setGendersSelected(value)
-    }
+  if (plataforms === undefined) return
 
-    const handlePlataforms = (value) => {
-        if(plataformsSelected.includes(value))
-            setPlataformsSelected([...plataformsSelected].filter((plataform) => plataform !== value))
-        else
-            setPlataformsSelected([...plataformsSelected].concat(value))
-    }
-
-    if(genders === undefined) return
-
-    if(plataforms === undefined) return
-
-    return (
+  return (
         <form onSubmit={handleSubmit}>
             <input type="text" placeholder="Display name" onChange={handleChange} value={displayName}/>
             <CustomDataList options={genders} onChange={handleGender} summary="Gender" optionsLimit={2}/>
@@ -58,7 +55,7 @@ const ProfileForm = ({ gender_get, plataforms_get }) => {
             <DatePicker selected={birthday} onChange={(date) => setBirthday(date)} showIcon/>
             <button type="submit">Sub</button>
         </form>
-    )
+  )
 }
 
 export default ProfileForm

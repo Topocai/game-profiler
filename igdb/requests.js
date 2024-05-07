@@ -21,6 +21,7 @@ const BaseRequest = async (bearerAccessToken, type, { fields = '*', limit = 10, 
       }
     )
     const data = await response.json()
+    console.log('DATA ', bodyField)
     const resolveData = data
 
     if (type === 'games') {
@@ -45,9 +46,9 @@ const GetGameById = (bearerAccessToken, gameId, { queryFields }) => {
   return queryResult
 }
 
-const GetGames = (bearerAccessToken, { queryFields, limit }) => {
+const GetGames = (bearerAccessToken, { queryFields, limit, conditions }) => {
   const fields = queryFields ? queryFields + `,${BASE_FIELDS}` : BASE_FIELDS
-  const queryResult = BaseRequest(bearerAccessToken, 'games', { fields, limit })
+  const queryResult = BaseRequest(bearerAccessToken, 'games', { fields, limit, condition: conditions })
 
   return queryResult
 }
@@ -78,28 +79,39 @@ const GetGameByName = (bearerAccessToken, name) => {
  *     - '1080p'
  * @return {Promise<string>} A promise that resolves with the cover URL, or rejects with an error
  */
-const GetCover = async (bearerAccessToken, gameId, { coverSize = 'thumb' }) => {
+const GetCover = async (bearerAccessToken, gameId, { coverSize = 'cover_big' }) => {
   console.log('Get cover:', gameId, coverSize)
 
-  const queryResult = await BaseRequest(bearerAccessToken, 'covers', { fields: 'url', condition: `game = ${gameId}` })
-  const sizes = [
-    'cover_small',
-    'screenshot_med',
-    'cover_big',
-    'logo_med',
-    'screenshot_big',
-    'screenshot_huge',
-    'thumb',
-    'micro',
-    '720p',
-    '1080p'
-  ]
+  try {
+    const queryResult = await BaseRequest(bearerAccessToken, 'covers', { fields: 'url', condition: `game = ${gameId}` })
 
-  if (sizes.indexOf(coverSize) === -1) { coverSize = sizes[0] }
+    const sizes = [
+      'cover_small',
+      'screenshot_med',
+      'cover_big',
+      'logo_med',
+      'screenshot_big',
+      'screenshot_huge',
+      'thumb',
+      'micro',
+      '720p',
+      '1080p'
+    ]
 
-  const coverUrl = queryResult.lenght > 0 ? queryResult[0].url.replace('t_thumb', `t_${coverSize}`) : 'No cover found'
+    if (queryResult[0] === undefined) {
+      return 'No cover found'
+    }
 
-  return coverUrl
+    if (sizes.indexOf(coverSize) === -1) { coverSize = sizes[2] }
+
+    const url = queryResult[0].url
+
+    const coverUrl = url != null ? url.replace('t_thumb', `t_${coverSize}`) : 'No cover found'
+
+    return coverUrl
+  } catch {
+    return new Error('No cover found')
+  }
 }
 
 module.exports = { GetGameById, GetGames, GetGameByName, GetCover, BaseRequest }

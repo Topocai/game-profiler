@@ -1,9 +1,9 @@
 /* eslint-disable react/prop-types */
 import './styles/game-card.css'
 
-const GameCard = ({name, summary, cover}) => {
-  console.log("Cover of card: ", cover)
-    return (
+const GameCard = ({ name, summary, cover }) => {
+  console.log('Cover of card: ', cover)
+  return (
       <article className="game-card">
         <img className="game-card-background" src={cover.cover} alt="" />
         <div className="game-card-content">
@@ -22,7 +22,7 @@ const GameCard = ({name, summary, cover}) => {
           <p className="game-card-description">{summary}</p>
         </div>
       </article>
-    )
+  )
 }
 
 export default GameCard
