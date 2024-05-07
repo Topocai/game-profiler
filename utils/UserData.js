@@ -2,7 +2,8 @@
  * Constructor function for creating a new UserData object with initial properties.
  *
  */
-function UserData (userId) {
+function UserData (userId, displayName) {
+  this.user_name = displayName
   this.user_id = userId
   this.user_avatar = null
   this.user_gender = null

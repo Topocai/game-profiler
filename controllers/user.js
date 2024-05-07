@@ -33,8 +33,8 @@ userRouter.post('/', async (req, res) => {
   const newUserData = { ...req.body }
 
   // newUserData contains Password, username, displayName and email
-  if (newUserData.password == null || newUserData.username == null || newUserData.name == null || newUserData.email == null) {
-    return res.status(400).json({ error: 'Missing required fields (Password, username, displayName or email)' })
+  if (newUserData.password == null || newUserData.username == null || newUserData.display_name == null || newUserData.email == null) {
+    return res.status(400).json({ error: 'Missing required fields (password, username, display_name or email)' })
   }
 
   // Create hash of password
@@ -43,13 +43,12 @@ userRouter.post('/', async (req, res) => {
   // create user mongooseObject
   // Check if username is unique
 
-  const userDataTemplate = new UserData()
+  const userDataTemplate = new UserData(null, newUserData.display_name)
 
   const userData = new UserDataModel(userDataTemplate)
 
   const user = new User({
     username: newUserData.username,
-    displayName: newUserData.name,
     password: passwordHash,
     email: newUserData.email,
 
@@ -83,7 +82,7 @@ userRouter.get('/:id', async (req, res) => {
 
 userRouter.use(middlewares.tokenVerify)
 
-// Modify user values (displayName and email)
+// Modify user values (email) // Not in use
 userRouter.put('/:id', async (req, res) => {
   const id = req.params.id
   const body = req.body
@@ -92,14 +91,13 @@ userRouter.put('/:id', async (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' })
   }
 
-  if (body.user == null && body.email == null) {
+  if (body.email == null) {
     return res.status(400).json({ error: 'Missing user or email' })
   }
 
   const user = await getUserModel(id, res)
 
   await user.updateOne({
-    displayName: body.user || user.displayName,
     email: body.email || user.email
   })
   return res.status(200).json(await User.findById(id).populate('UserData'))

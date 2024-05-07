@@ -8,11 +8,6 @@ const UserSchema = new mongoose.Schema({
     minlength: [3, 'Username must be at least 3 characters long']
   },
   password: String,
-  displayName: {
-    type: String,
-    minlength: [3, 'Display name must be at least 3 characters long'],
-    maxlenght: [20, 'Display name must be at most 20 characters long']
-  },
   email: {
     type: String,
     validate: {

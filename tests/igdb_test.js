@@ -43,7 +43,7 @@ describe('One user with data and game defined', () => {
 
     const user = new User(helper.dummyUser)
     const gameUserData = new UserGameDataModel({ ...helper.dummyGameUserData, user_id: user._id })
-    const userData = new UserDataModel({ ...helper.dummyUserData, user: user._id, userGamesData: [gameUserData] })
+    const userData = new UserDataModel({ ...helper.dummyUserData, user_id: user._id, userGamesData: [gameUserData] })
 
     const passwordHash = await bcrypt.hash(helper.dummyUser.password, 10)
     user.password = passwordHash

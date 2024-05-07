@@ -5,6 +5,11 @@ const UserDataSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  user_name: {
+    type: String,
+    minlength: [3, 'Display name must be at least 3 characters long'],
+    maxlenght: [20, 'Display name must be at most 20 characters long']
+  },
   user_avatar: String,
   user_gender: String,
   user_platform: Array,

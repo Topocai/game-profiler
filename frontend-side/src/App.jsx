@@ -3,6 +3,7 @@ import './App.css'
 import CardGrid from './components/CardGrid'
 
 import gameServices from './services/games'
+import UserProfile from './components/UserProfile'
 
 import { useState, useEffect } from 'react'
 
@@ -48,6 +49,7 @@ const App = () => {
         <button type='submit'>Buscar</button>
       </form>
       <CardGrid games={games} />
+      <UserProfile userId={'663abc87ac8842fd49120732'} />
     </>
   )
 }
