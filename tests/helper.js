@@ -9,7 +9,7 @@ const dummyUser = {
 
 const dummyUserData = {
   user_gender: variables.genders.FEMALE.id,
-  user_avatar: 'https://imgbox.com/ctmigkfs',
+  user_avatar: 'https://thumbs2.imgbox.com/4a/c0/ctmigkfs_t.jpg',
   user_platform: [variables.plataforms.PC.id],
   birthday: new Date('2006-06-06'),
   created_at: Date.now(),

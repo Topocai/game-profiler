@@ -64,6 +64,23 @@ userRouter.post('/', async (req, res) => {
   return res.status(201).json(newUser)
 })
 
+userRouter.get('/:id', async (req, res) => {
+  const id = req.params.id
+  const user = await User.findById(id).populate({
+    path: 'UserData',
+    populate: {
+      path: 'userGamesData',
+      model: 'UserGameData',
+      select: '-user_id'
+    }
+  })
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' })
+  }
+
+  return res.status(200).json(user)
+})
+
 userRouter.use(middlewares.tokenVerify)
 
 // Modify user values (displayName and email)
