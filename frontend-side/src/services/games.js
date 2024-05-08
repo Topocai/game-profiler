@@ -17,8 +17,39 @@ const getCover = async (id) => {
   return response.data
 }
 
+const getGameById = async (id) => {
+  const response = await axios.get(`${BASE_URL}/${id}`)
+  console.log('Game ', response.data)
+  return response.data
+}
+
+const getGamesFromArray = async (games) => {
+  const gamesHandler = games
+  let newArray = gamesHandler.map(game => getGameById(game))
+  newArray = await Promise.all(newArray)
+  console.log('ARray ', newArray)
+
+  return newArray
+}
+
+const getCoversFromArray = async (games) => {
+  const newGamesArray = games
+  let covers = newGamesArray.map(game => getCover(game.id))
+  covers = await Promise.all(covers)
+
+  newGamesArray.forEach((game, index) => {
+    game.cover = covers[index]
+    newGamesArray[index] = game
+  })
+
+  return newGamesArray
+}
+
 export default {
   getGames,
   getCover,
-  getGamesBySearch
+  getGameById,
+  getGamesBySearch,
+  getCoversFromArray,
+  getGamesFromArray
 }

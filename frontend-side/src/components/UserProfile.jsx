@@ -1,29 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from 'react'
-
-import userServices from '../services/user'
 import './styles/user-profile.css'
 
-const UserProfile = ({ userId }) => {
-  const [userInfo, setUserInfo] = useState(null)
-
-  useEffect(() => {
-    async function getUser () {
-      const user = await userServices.getUser(userId)
-      setUserInfo(user)
-    }
-    getUser()
-  }, [])
-  if (userInfo === null) return null
-  console.log(userInfo.UserData)
-
-  const userAvatar = userInfo.UserData.user_avatar ? userInfo.UserData.user_avatar : 'https://placehold.co/500x500'
-  const userName = userInfo.UserData.user_name
-  const platforms = userInfo.UserData.user_platform.length > 0 ? userInfo.UserData.user_platform : null
-  const gender = userInfo.UserData.user_gender ? userInfo.UserData.user_gender : null
-
-  const gamesLists = userInfo.UserData.gamesList ? userInfo.UserData.gamesList : null
-
+const UserProfile = ({ userProfile }) => {
+  if (userProfile.length === 0) return
+  const {
+    userAvatar,
+    userName,
+    gender,
+    platforms,
+    gamesLists
+  } = userProfile
   return (
     <section>
       <article className='user-profile-container'>

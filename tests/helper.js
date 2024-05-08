@@ -7,7 +7,7 @@ const dummyUser = {
 }
 
 const dummyUserData = {
-  user_name: 'Super Dummy',
+  user_name: 'Topocai',
   user_gender: variables.genders.FEMALE.id,
   user_avatar: 'https://thumbs2.imgbox.com/4a/c0/ctmigkfs_t.jpg',
   user_platform: [variables.plataforms.PC.id],
@@ -15,7 +15,11 @@ const dummyUserData = {
   created_at: Date.now(),
   gamesList: {
     finished: [4445],
-    playing: [5432]
+    playing: [5432],
+    abandoned: [],
+    on_hold: [],
+    wishlist: [],
+    favorites: []
   }
 }
 

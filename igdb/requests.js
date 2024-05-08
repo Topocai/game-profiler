@@ -40,22 +40,22 @@ const BaseRequest = async (bearerAccessToken, type, { fields = '*', limit = 10, 
   }
 }
 
-const GetGameById = (bearerAccessToken, gameId, { queryFields }) => {
+const GetGameById = async (bearerAccessToken, gameId, { queryFields }) => {
   const fields = queryFields ? queryFields + `,${BASE_FIELDS}` : BASE_FIELDS
-  const queryResult = BaseRequest(bearerAccessToken, 'games', { fields, condition: `id = ${gameId}`, limit: 1 })
+  const queryResult = await BaseRequest(bearerAccessToken, 'games', { fields, condition: `id = ${gameId}`, limit: 1 })
+  return queryResult[0]
+}
+
+const GetGames = async (bearerAccessToken, { queryFields, limit, conditions }) => {
+  const fields = queryFields ? queryFields + `,${BASE_FIELDS}` : BASE_FIELDS
+  const queryResult = await BaseRequest(bearerAccessToken, 'games', { fields, limit, condition: conditions })
+
   return queryResult
 }
 
-const GetGames = (bearerAccessToken, { queryFields, limit, conditions }) => {
-  const fields = queryFields ? queryFields + `,${BASE_FIELDS}` : BASE_FIELDS
-  const queryResult = BaseRequest(bearerAccessToken, 'games', { fields, limit, condition: conditions })
-
-  return queryResult
-}
-
-const GetGameByName = (bearerAccessToken, name) => {
+const GetGameByName = async (bearerAccessToken, name) => {
   console.log('Get by name:', name)
-  const queryResult = BaseRequest(bearerAccessToken, 'games', { fields: BASE_FIELDS, search: name, limit: 3 })
+  const queryResult = await BaseRequest(bearerAccessToken, 'games', { fields: BASE_FIELDS, search: name, limit: 6 })
 
   return queryResult
 }
