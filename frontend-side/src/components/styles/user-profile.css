@@ -1,0 +1,46 @@
+
+
+.user-profile-container {
+    font-family: "Roboto", sans-serif;
+    display: flex;
+    flex-flow: row wrap;
+
+    color: white;
+}
+
+.user-profile-avatar img {
+    border-radius: 10px;
+    width: 400px;
+}
+
+.user-profile-info {
+    display: flex;
+    flex-flow: column nowrap; 
+    
+}
+
+.user-profile-name {
+    & p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.678);
+    }
+
+    & h2 {
+        margin: 0;
+        margin-bottom: 5px;
+    }
+}
+
+.user-profile-platform {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 8px;
+}
+
+.user-profile-platform span {
+    border: 1px solid white;
+    backdrop-filter: blur(1px);
+    padding: 2px 8px;
+    border-radius: 10px;
+    box-shadow: rgba(255, 255, 255, 0.295) 0px 3px 8px;
+}
