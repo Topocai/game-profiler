@@ -9,6 +9,7 @@ const app = express()
 const config = require('./utils/config')
 const middlewares = require('./utils/middlewares')
 
+app.use(express.static('dist'))
 app.use(cors())
 app.use(express.json())
 

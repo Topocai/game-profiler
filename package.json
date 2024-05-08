@@ -4,6 +4,7 @@
   "description": "A game profiler creator by topocai ",
   "main": "index.js",
   "scripts": {
+    "start": "cross-env NODE_ENV=dev node index.js",
     "dev": "cross-env NODE_ENV=dev nodemon index.js",
     "test": "cross-env NODE_ENV=dev node --test"
   },
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.1.1",
+    "@flydotio/dockerfile": "^0.5.7",
     "eslint": "^8.57.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
