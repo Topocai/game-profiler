@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 
 import userServices from '../services/user'
 import UserProfile from './UserProfile'
@@ -36,10 +36,14 @@ const UserSection = ({ userId }) => {
   return (
     <section>
         <UserProfile userProfile={userProfile} />
-    <UserLists listsData={gamesLists} />
+        <UserLists listsData={gamesLists} />
     </section>
 
   )
+}
+
+UserSection.propTypes = {
+  userId: PropTypes.string.isRequired
 }
 
 export default UserSection

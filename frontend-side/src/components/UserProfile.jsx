@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import './styles/user-profile.css'
+import PropTypes from 'prop-types'
 
 const UserProfile = ({ userProfile }) => {
   if (userProfile.length === 0) return
@@ -43,6 +43,10 @@ const UserProfile = ({ userProfile }) => {
       </article>
     </section>
   )
+}
+
+UserProfile.propTypes = {
+  userProfile: PropTypes.object.isRequired
 }
 
 export default UserProfile

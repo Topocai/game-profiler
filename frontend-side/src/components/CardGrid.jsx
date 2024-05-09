@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import SimpleGameCard from './simpleGameCard'
+import PropTypes from 'prop-types'
 
 import './styles/card-grid.css'
 
@@ -12,6 +12,10 @@ const CardGrid = ({ games }) => {
     </section>
 
   )
+}
+
+CardGrid.propTypes = {
+  games: PropTypes.array
 }
 
 export default CardGrid

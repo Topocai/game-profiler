@@ -1,6 +1,5 @@
-/* eslint-disable react/prop-types */
-
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const CustomDataList = ({ options, summary, onChange, optionsLimit }) => {
   /**
@@ -56,6 +55,13 @@ const CustomDataList = ({ options, summary, onChange, optionsLimit }) => {
 
       </details>
   )
+}
+
+CustomDataList.propTypes = {
+  options: PropTypes.array,
+  summary: PropTypes.string,
+  onChange: PropTypes.func,
+  optionsLimit: PropTypes.number
 }
 
 export default CustomDataList

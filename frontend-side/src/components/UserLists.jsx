@@ -1,8 +1,9 @@
-/* eslint-disable react/prop-types */
-
 import { useState } from 'react'
+import PropTypes from 'prop-types'
+
 import gameServices from '../services/games'
 import CardGrid from './CardGrid'
+
 const UserLists = ({ listsData }) => {
   const [gamesFromList, setGames] = useState([])
   if (listsData.length === 0) return
@@ -27,6 +28,10 @@ const UserLists = ({ listsData }) => {
             </details>
         </section>
   )
+}
+
+UserLists.propTypes = {
+  listsData: PropTypes.object.isRequired
 }
 
 export default UserLists
