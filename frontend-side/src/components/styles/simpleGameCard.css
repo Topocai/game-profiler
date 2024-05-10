@@ -22,7 +22,7 @@
     backdrop-filter: blur(1px);
 
     padding: 5px 20px 10px 20px;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px -100px 50px -5px inset;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px -90px 36px -28px inset;
 }
 
 .simple-game-card-content span {

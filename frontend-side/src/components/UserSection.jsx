@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import userServices from '../services/user'
+import gameServices from '../services/games'
 import UserProfile from './UserProfile'
 import UserLists from './UserLists'
 

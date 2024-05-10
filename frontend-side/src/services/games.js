@@ -19,7 +19,7 @@ const getCover = async (id) => {
 
 const getGameById = async (id) => {
   const response = await axios.get(`${BASE_URL}/${id}`)
-  console.log('Game ', response.data)
+  // console.log('Game ', response.data)
   return response.data
 }
 

@@ -5,6 +5,7 @@ import './App.css'
 import CardGrid from './components/CardGrid'
 import UserSection from './components/UserSection'
 import UserLogin from './components/UserLogin'
+import EditGame from './components/EditGame'
 
 import gameServices from './services/games'
 import loginService from './services/login'
@@ -58,6 +59,11 @@ const App = () => {
     setUser({})
   }
 
+  const testHandler = (event) => {
+    event.preventDefault()
+    console.log(event)
+  }
+
   return (
     <>
       {
@@ -65,11 +71,14 @@ const App = () => {
           ? <button onClick={onLogoutHandler}>Logout</button>
           : <UserLogin onLogin={onLoginHandler} />
       }
+      {
+        userLogged.token && <EditGame game={games[0]} userLogged={userLogged} onSubmitHandler={testHandler} />
+      }
       <form onSubmit={(e) => onSubmitHandler(e, { gameName: e.target[0].value })}>
         <input type='text' placeholder='Ingresa el nombre de un juego'/>
         <button type='submit'>Buscar</button>
       </form>
-      <CardGrid games={games} />
+      <CardGrid size={'normal'} games={games} onGameClickHandler={testHandler} />
       {userLogged.token && <UserSection userId={userLogged.id} />}
     </>
   )

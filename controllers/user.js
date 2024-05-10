@@ -173,7 +173,7 @@ userRouter.post('/:id/game', async (req, res) => {
 })
 
 // Modify game Data of a user
-userRouter.put('/:id/game/', async (req, res) => {
+userRouter.put('/:id/game', async (req, res) => {
   const id = req.params.id
   const body = req.body
 
