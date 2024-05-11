@@ -2,13 +2,17 @@ import axios from 'axios'
 const BASE_URL = '/api/games'
 
 const getGames = async () => {
-  const response = await axios.get(BASE_URL)
-
+  const conditions = 'aggregated_rating%20>=%2086%20%26%20summary%20!=%20null%20%26%20cover%20!=%20null'
+  const fields = 'aggregated_rating'
+  const sort = 'aggregated_rating%20desc'
+  const response = await axios.get(BASE_URL + '?conditions=' + conditions + '&fields=' + fields + '&sort=' + sort)
+  console.log(response.data)
   return response.data
 }
 
 const getGamesBySearch = async (search) => {
   const response = await axios.get(`${BASE_URL}/search/${search}`)
+  console.log(response.data)
   return response.data
 }
 

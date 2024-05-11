@@ -9,11 +9,25 @@ import EditGame from './components/EditGame'
 
 import gameServices from './services/games'
 import loginService from './services/login'
-import userServices from './services/user'
+
+const userStates = {
+  LOGGED: 'logged',
+  LOGOUT: 'logout'
+}
+
+const appStateBody = {
+  userSection: userStates.LOADING
+}
 
 const App = () => {
+  const [appState, setAppState] = useState({ ...appStateBody })
   const [games, setGames] = useState([])
   const [userLogged, setUser] = useState({})
+
+  useEffect(() => {
+    if (userLogged === null) setAppState({ ...appState, userSection: userStates.LOGOUT })
+    else setAppState({ ...appState, userSection: userStates.LOGGED })
+  }, [userLogged])
 
   useEffect(() => {
     async function getGame () {
@@ -24,7 +38,10 @@ const App = () => {
     }
     getGame()
     const isLogged = window.localStorage.getItem('user')
-    if (isLogged) setUser(JSON.parse(isLogged))
+    if (isLogged) {
+      setUser(JSON.parse(isLogged))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onSubmitHandler = async (event, { gameName }) => {

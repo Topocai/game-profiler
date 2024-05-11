@@ -19,8 +19,9 @@ gamesRouter.get('/', async (req, res) => {
   const fields = req.query.fields ? req.query.fields : null
   const limit = req.query.limit ? Number(req.query.limit) : 10
   const conditions = req.query.conditions ? req.query.conditions : null
+  const sort = req.query.sort ? req.query.sort : null
 
-  const data = await igbdbRequests.GetGames(req.body.igdb_token, { queryFields: fields, limit, conditions })
+  const data = await igbdbRequests.GetGames(req.body.igdb_token, { queryFields: fields, limit, conditions, sort })
   res.send(data)
   // .catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
 })

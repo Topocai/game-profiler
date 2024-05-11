@@ -2,10 +2,13 @@ const BASE_FIELDS = 'name,id,url,first_release_date,summary,genres'
 
 const IGDBUrl = 'https://api.igdb.com/v4/'
 
-const BaseRequest = async (bearerAccessToken, type, { fields = '*', limit = 10, condition, search }) => {
+const BaseRequest = async (bearerAccessToken, type, { fields = '*', limit = 10, condition, search, sort }) => {
   let bodyField = `fields ${fields}${type === 'games' ? ',parent_game' : ''}; limit ${limit};`
+  bodyField += sort ? ` sort ${sort};` : ''
   bodyField += condition ? ` where ${condition};` : ''
   bodyField += search ? ` search "${search}";` : ''
+
+  console.log(bodyField)
 
   try {
     const response = await fetch(
@@ -21,7 +24,6 @@ const BaseRequest = async (bearerAccessToken, type, { fields = '*', limit = 10, 
       }
     )
     const data = await response.json()
-    console.log('DATA ', bodyField)
     const resolveData = data
 
     if (type === 'games') {
@@ -46,16 +48,17 @@ const GetGameById = async (bearerAccessToken, gameId, { queryFields }) => {
   return queryResult[0]
 }
 
-const GetGames = async (bearerAccessToken, { queryFields, limit, conditions }) => {
+const GetGames = async (bearerAccessToken, { queryFields, limit, conditions, sort }) => {
   const fields = queryFields ? queryFields + `,${BASE_FIELDS}` : BASE_FIELDS
-  const queryResult = await BaseRequest(bearerAccessToken, 'games', { fields, limit, condition: conditions })
+  console.log(sort)
+  const queryResult = await BaseRequest(bearerAccessToken, 'games', { fields, limit, condition: conditions, sort })
 
   return queryResult
 }
 
 const GetGameByName = async (bearerAccessToken, name) => {
   console.log('Get by name:', name)
-  const queryResult = await BaseRequest(bearerAccessToken, 'games', { fields: BASE_FIELDS, search: name, limit: 6 })
+  const queryResult = await BaseRequest(bearerAccessToken, 'games', { fields: `${BASE_FIELDS}, aggregated_rating`, search: name, limit: 6 })
 
   return queryResult
 }
