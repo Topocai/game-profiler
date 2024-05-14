@@ -13,6 +13,7 @@ loginRouter.post('/', async (req, res) => {
   }
 
   const user = await User.findOne({ username })
+
   if (user == null) {
     return res.status(401).json({ error: 'Invalid username' })
   }

@@ -103,7 +103,34 @@ userRouter.put('/:id', async (req, res) => {
   return res.status(200).json(await User.findById(id).populate('UserData'))
 })
 
-// Add a game to a list of user data
+// Modify user data (Modify lists here)
+userRouter.put('/:id/profile', async (req, res) => {
+  const id = req.params.id
+  const body = req.body
+
+  if (body.userData == null) {
+    return res.status(400).json({ error: 'Missing userData' })
+  }
+
+  const actualUserData = await getUserDataModel(id, res)
+
+  const newUserData = body.userData
+
+  await actualUserData.updateOne({
+    user_name: newUserData.user_name,
+    user_avatar: newUserData.user_avatar,
+    user_gender: newUserData.user_gender,
+    user_platform: newUserData.user_platform,
+    birthday: newUserData.birthday,
+    gamesList: newUserData.gamesList
+  })
+
+  const newData = await getUserDataModel(id, res)
+
+  res.status(200).json(newData.toJSON())
+})
+
+// Add a game to a list of user data (Not in use)
 userRouter.post('/lists/:id', async (req, res) => {
   const id = req.params.id
   const body = req.body
@@ -135,7 +162,7 @@ userRouter.post('/lists/:id', async (req, res) => {
 })
 
 // Add a gameData of a user
-userRouter.post('/:id/game', async (req, res) => {
+userRouter.post('/:id/profile/game', async (req, res) => {
   const id = req.params.id
   const body = req.body
 
@@ -173,7 +200,7 @@ userRouter.post('/:id/game', async (req, res) => {
 })
 
 // Modify game Data of a user
-userRouter.put('/:id/game', async (req, res) => {
+userRouter.put('/:id/profile/game', async (req, res) => {
   const id = req.params.id
   const body = req.body
 
@@ -203,7 +230,7 @@ userRouter.put('/:id/game', async (req, res) => {
 })
 
 // Delete game Data of a user
-userRouter.delete('/:id/game', async (req, res) => {
+userRouter.delete('/:id/profile/game', async (req, res) => {
   const id = req.params.id
   const body = req.body
 

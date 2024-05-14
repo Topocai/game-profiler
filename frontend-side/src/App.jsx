@@ -77,7 +77,6 @@ const App = () => {
   }
 
   const testHandler = (event) => {
-    event.preventDefault()
     console.log(event)
   }
 

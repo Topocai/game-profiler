@@ -14,17 +14,17 @@ const dummyUserData = {
   birthday: new Date('2006-06-06'),
   created_at: Date.now(),
   gamesList: {
-    finished: [4445],
-    playing: [5432],
-    abandoned: [],
-    on_hold: [],
-    wishlist: [],
-    favorites: []
+    finished: [215769, 122, 7351],
+    playing: [141533],
+    abandoned: [26764, 119],
+    on_hold: [19686],
+    wishlist: [126098],
+    favorites: [7351]
   }
 }
 
 const dummyGameUserData = {
-  game_id: 4445,
+  game_id: 11155,
   status: 'Playing',
   score: 8,
   started_at: null,

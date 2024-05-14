@@ -13,23 +13,38 @@ const gridContext = {
   USER_MINI_LIST: 'user-mini-list'
 }
 
-const CardGrid = ({ size, context, games, onGameClickHandler }) => {
+const CardGrid = ({ children, size, context, games, onGameClickHandler }) => {
   if (games.length === 0) return null
   if (size === undefined) size = cardSizes.NORMAL
   if (context === undefined) context = gridContext.NORMAL
 
   const gridStyle = {
     gridTemplateColumns: size === cardSizes.SMALL
-      ? 'repeat(5, 60px)'
+      ? `repeat(${games.length}, 0.1fr)`
       : 'repeat(auto-fill, minmax(300px, 1fr))'
   }
 
-  const gridClass = `card-grid ${gridContext[context]}`
+  const gridClass = `card-grid ${Object.values(gridContext).includes(context) ? context : 'normal'}`
   return (
-    <section style={gridStyle} className={gridClass}>
-      {games.map(game => <SimpleGameCard key={game.id} size={size} game={game} cover={game.cover} onClickHandler={onGameClickHandler} />)}
-    </section>
-
+    <article style={gridStyle} className={gridClass}>
+      {children}
+      {
+      context === gridContext.USER_MINI_LIST &&
+      games.map(game => {
+        const index = games.indexOf(game)
+        const cardStyle = {
+          placeSelf: 'center',
+          gridColumn: `1 / ${index + 2}`,
+          gridRow: '1/1'
+        }
+        return <SimpleGameCard key={game.id} size={size} game={game} cover={game.cover} onClickHandler={onGameClickHandler} style={cardStyle} />
+      })
+      }
+      {
+        context === gridContext.NORMAL &&
+        games.map(game => <SimpleGameCard key={game.id} size={size} game={game} cover={game.cover} onClickHandler={onGameClickHandler} />)
+      }
+    </article>
   )
 }
 
@@ -37,7 +52,7 @@ CardGrid.propTypes = {
   size: PropTypes.oneOf([cardSizes.NORMAL, cardSizes.SMALL]),
   context: PropTypes.oneOf([gridContext.NORMAL, gridContext.USER_MINI_LIST]),
   games: PropTypes.array,
-  onGameClickHandler: PropTypes.func.isRequired
+  onGameClickHandler: PropTypes.func
 }
 
 export default CardGrid

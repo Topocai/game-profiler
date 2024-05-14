@@ -1,16 +1,21 @@
+/* eslint-disable camelcase */
 /**
  * Constructor function for creating a new UserData object with initial properties.
  *
  */
-function UserData (userId, displayName) {
+function UserData (
+  userId,
+  displayName,
+  userDataObject
+) {
   this.user_name = displayName
   this.user_id = userId
-  this.user_avatar = null
-  this.user_gender = null
-  this.user_platform = []
-  this.birthday = null
-  this.created_at = Date.now()
-  this.gamesList =
+  this.user_avatar = userDataObject.user_avatar || null
+  this.user_gender = userDataObject.user_gender || null
+  this.user_platform = userDataObject.user_platform || []
+  this.birthday = userDataObject.birthday || null
+  this.created_at = userDataObject.created_at || Date.now()
+  this.gamesList = userDataObject.gamesList ||
     {
       finished: [],
       playing: [],
@@ -19,7 +24,7 @@ function UserData (userId, displayName) {
       wishlist: [],
       favorites: []
     }
-  this.userGamesData = [] // array of UserGameData objects
+  this.userGamesData = userDataObject.userGamesData || [] // array of UserGameData objects
 }
 
 /**

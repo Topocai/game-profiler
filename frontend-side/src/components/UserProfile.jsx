@@ -73,7 +73,7 @@ const UserProfile = ({ userProfile }) => {
                     return (
                       <div key={list} className='user-profile-games-list'>
                         <strong>{list}</strong>
-                        <CardGrid size={'small'} context={'USER_MINI_LIST'} games={userLists[list]} />
+                        <CardGrid size={'small'} context={'user-mini-list'} games={userLists[list]} />
                       </div>
                     )
                   })
