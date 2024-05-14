@@ -29,8 +29,8 @@ const BaseRequest = async (bearerAccessToken, type, { fields = '*', limit = 10, 
     if (type === 'games') {
       if (data[0].parent_game) {
         const parentGame = await GetGameById(bearerAccessToken, data[0].parent_game, { queryFields: BASE_FIELDS })
-        if (parentGame[0] !== undefined) {
-          resolveData.unshift(parentGame[0])
+        if (parentGame !== undefined) {
+          resolveData.unshift(parentGame)
         }
       }
     }

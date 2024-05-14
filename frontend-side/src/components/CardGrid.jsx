@@ -27,7 +27,7 @@ const CardGrid = ({ children, size, context, games, onGameClickHandler }) => {
   const gridClass = `card-grid ${Object.values(gridContext).includes(context) ? context : 'normal'}`
   return (
     <article style={gridStyle} className={gridClass}>
-      {children}
+      {children && children}
       {
       context === gridContext.USER_MINI_LIST &&
       games.map(game => {
@@ -37,18 +37,29 @@ const CardGrid = ({ children, size, context, games, onGameClickHandler }) => {
           gridColumn: `1 / ${index + 2}`,
           gridRow: '1/1'
         }
-        return <SimpleGameCard key={game.id} size={size} game={game} cover={game.cover} onClickHandler={onGameClickHandler} style={cardStyle} />
+        if (typeof (game) !== 'object') {
+          return <SimpleGameCard key={game} size={size} game={game} cover={null} onClickHandler={onGameClickHandler} style={cardStyle} />
+        } else {
+          return <SimpleGameCard key={game.id} size={size} game={game} cover={game.cover} onClickHandler={onGameClickHandler} style={cardStyle} />
+        }
       })
       }
       {
         context === gridContext.NORMAL &&
-        games.map(game => <SimpleGameCard key={game.id} size={size} game={game} cover={game.cover} onClickHandler={onGameClickHandler} />)
+        games.map(game => {
+          if (typeof (game) !== 'object') {
+            return <SimpleGameCard key={game} size={size} game={game} cover={null} onClickHandler={onGameClickHandler} />
+          } else {
+            return <SimpleGameCard key={game.id} size={size} game={game} cover={game.cover} onClickHandler={onGameClickHandler} />
+          }
+        })
       }
     </article>
   )
 }
 
 CardGrid.propTypes = {
+  children: PropTypes.node,
   size: PropTypes.oneOf([cardSizes.NORMAL, cardSizes.SMALL]),
   context: PropTypes.oneOf([gridContext.NORMAL, gridContext.USER_MINI_LIST]),
   games: PropTypes.array,

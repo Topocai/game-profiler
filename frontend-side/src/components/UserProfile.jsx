@@ -1,12 +1,9 @@
-import { useState, useEffect } from 'react'
-
 import './styles/user-profile.css'
 import PropTypes from 'prop-types'
 
-import gameServices from '../services/games'
-
 import CardGrid from './CardGrid'
 
+/*
 const fillLists = async (lists) => {
   const newObject = {}
   const values = Object.values(lists).map(list => list.map(game => gameServices.getGameById(game)))
@@ -17,7 +14,7 @@ const fillLists = async (lists) => {
     newObject[Object.keys(lists)[i]] = newList
   }
   return newObject
-}
+} */
 
 const gridContext = {
   NORMAL: 'normal',
@@ -25,8 +22,6 @@ const gridContext = {
 }
 
 const UserProfile = ({ userProfile }) => {
-  const [userLists, setUserLists] = useState(null)
-
   const {
     userAvatar,
     userName,
@@ -34,14 +29,13 @@ const UserProfile = ({ userProfile }) => {
     platforms,
     gamesLists
   } = userProfile
+  /*
+  async function getLists () {
+    const lists = await fillLists(gamesLists)
+    setUserLists(lists)
+  }
 
-  useEffect(() => {
-    async function getLists () {
-      const lists = await fillLists(gamesLists)
-      setUserLists(lists)
-    }
-    getLists()
-  }, [])
+  getLists() */
 
   if (userProfile.length === 0) return
 
@@ -68,12 +62,12 @@ const UserProfile = ({ userProfile }) => {
             <h3>Games</h3>
             <div className='user-profile-games-lists-container'>
               {
-                userLists
-                  ? Object.keys(userLists).map(list => {
+                gamesLists
+                  ? Object.keys(gamesLists).map(list => {
                     return (
                       <div key={list} className='user-profile-games-list'>
                         <strong>{list}</strong>
-                        <CardGrid size={'small'} context={'user-mini-list'} games={userLists[list]} />
+                        <CardGrid size={'small'} context={gridContext.USER_MINI_LIST} games={gamesLists[list]} />
                       </div>
                     )
                   })

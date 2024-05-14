@@ -1,10 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import userServices from '../services/user'
-import gameServices from '../services/games'
 import UserProfile from './UserProfile'
-import UserLists from './UserLists'
 
 const UserSection = ({ userId }) => {
   const [userInfo, setUserInfo] = useState(null)
@@ -37,7 +36,6 @@ const UserSection = ({ userId }) => {
   return (
     <section>
         <UserProfile userProfile={userProfile} />
-        <UserLists listsData={gamesLists} />
     </section>
 
   )

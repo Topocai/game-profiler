@@ -21,6 +21,8 @@
     border-radius: 0.625rem;
     backdrop-filter: blur(1px);
 
+    width: 100%;
+
     padding: 5px 20px 10px 20px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px -90px 36px -28px inset;
 }
@@ -48,5 +50,15 @@
     color: white;
     text-shadow: 0px 0px 4px black;
     font-weight: 600;
+}
+
+.loading-card {
+    animation: fadeIn 0.5s cubic-bezier(0, 0.05, 0, 0.37) infinite;
+    animation-direction: alternate-reverse;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0.1; }
+    100% { opacity: 1; }
 }
 

@@ -1,13 +1,13 @@
 import axios from 'axios'
 const BASE_URL = '/api/games'
 
-const getGames = async () => {
+const getGames = async (limit = 5) => {
   const randomRating = Math.floor(Math.random() * 22) + 78
   console.log(randomRating)
   const conditions = encodeURIComponent('aggregated_rating <' + `${randomRating}` + ' & summary != null & cover != null')
   const fields = 'aggregated_rating'
   const sort = 'aggregated_rating%20desc'
-  const response = await axios.get(BASE_URL + '?conditions=' + conditions + '&fields=' + fields + '&sort=' + sort)
+  const response = await axios.get(BASE_URL + '?conditions=' + conditions + '&fields=' + fields + '&sort=' + sort + '&limit=' + Number(limit))
   console.log(response.data)
   return response.data
 }

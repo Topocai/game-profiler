@@ -19,24 +19,28 @@ const appStateBody = {
   userSection: userStates.LOADING
 }
 
+const searchArray = ['this', 'is', 'a', 'easter', 'egg']
+
 const App = () => {
   const [appState, setAppState] = useState({ ...appStateBody })
-  const [games, setGames] = useState([])
+  const [games, setGames] = useState(searchArray)
   const [userLogged, setUser] = useState({})
 
   useEffect(() => {
     if (userLogged === null) setAppState({ ...appState, userSection: userStates.LOGOUT })
     else setAppState({ ...appState, userSection: userStates.LOGGED })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLogged])
 
   useEffect(() => {
-    async function getGame () {
-      const gamesResult = await gameServices.getGames()
+    async function getGames (amount) {
+      const gamesResult = await gameServices.getGames(amount)
       const gamesWithCovers = await gameServices.getCoversFromArray(gamesResult)
 
       setGames(gamesWithCovers)
     }
-    getGame()
+    const GAME_COUNT = 6
+    getGames(GAME_COUNT)
     const isLogged = window.localStorage.getItem('user')
     if (isLogged) {
       setUser(JSON.parse(isLogged))
@@ -46,6 +50,7 @@ const App = () => {
 
   const onSubmitHandler = async (event, { gameName }) => {
     event.preventDefault()
+    setGames(searchArray)
     const searchResult = await gameServices.getGamesBySearch(gameName)
     if (searchResult.length > 0) {
       const gamesWithCovers = await gameServices.getCoversFromArray(searchResult)
