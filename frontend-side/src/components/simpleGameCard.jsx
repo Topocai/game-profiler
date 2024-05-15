@@ -41,12 +41,10 @@ const SimpleGameCard = ({ size, game, cover, onClickHandler, style }) => {
 
       coverUrl = coverUrl.slice(coverUrl.indexOf('/upload/') + 8, coverUrl.length)
       coverUrl = `https://images.igdb.com/igdb/image/upload/${coverUrl}`
-      console.log(coverUrl)
       const style = {
         ...cardStyleTemplate,
         backgroundImage: `url(${coverUrl})`
       }
-      console.log('here ', style)
       setGameContent({ ...gameInfo, cardStyle: style })
     }
 

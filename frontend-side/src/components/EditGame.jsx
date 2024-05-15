@@ -1,68 +1,96 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react'
 
 import userServices from '../services/user'
 import PropTypes from 'prop-types'
 
+import './styles/edit-game-modal.css'
+
+import InputList from './InputList'
+
 const EditGame = ({ game, userLogged, onSubmitHandler }) => {
   const [user, setUserData] = useState(null)
+  // const [gameUserData, setGameUserData] = useState(null)
+  const [selectedList, setSelectedList] = useState(null)
 
   useEffect(() => {
     async function getUser () {
       const userData = await userServices.getUser(userLogged.id)
-      setUserData(userData)
+      setUserData(userData.UserData)
+
+      // const existingGameData = user.userGamesData.find(gameList => gameList.game_id === game.id)
+      Object.keys(userData.UserData.gamesList).forEach(list => {
+        const finded = userData.UserData.gamesList[list].includes(game.id)
+        if (finded) {
+          setSelectedList(list)
+        }
+      })
+      /*
+      if (existingGameData) {
+        setGameUserData(existingGameData)
+      } */
     }
     getUser()
-  }, [])
+  }, [game])
 
   if (game === undefined || game === null) return null
   if (user === null) return null
-  const userGames = user.UserData.userGamesData
-  const userLists = user.UserData.gamesList
-  const gameData = userGames.find(gameList => gameList.game_id === game.id)
+
+  const userLists = user.gamesList
 
   const onListSelected = async (event) => {
     const list = event.target.value
-    console.log(list)
+    // Elimina el juego de todas las listas
     Object.keys(userLists).forEach(
-      listI => (userLists[listI].includes(game.id) ? userLists[listI].splice(userLists[listI].indexOf(game.id), 1) : null)
+      listI => ((listI !== 'favorites' && userLists[listI].includes(game.id)) ? userLists[listI].splice(userLists[listI].indexOf(game.id), 1) : null)
     )
+    // Añade el juego a la nueva lista
     userLists[list].push(game.id)
-    const userData = { ...user.UserData, gamesList: userLists }
-    const newUser = { ...user, UserData: userData }
+    const newUser = { ...user, gamesList: userLists }
+    setSelectedList(list)
     setUserData(newUser)
   }
 
   const onFavoriteHandler = async () => {
-
+    if (userLists.favorites.includes(game.id)) {
+      userLists.favorites = userLists.favorites.filter(id => id !== game.id)
+    } else {
+      userLists.favorites.push(game.id)
+    }
+    const newUser = { ...user, gamesList: userLists }
+    setUserData(newUser)
   }
 
-  return (
-        <dialog open>
-            <form onSubmit={(e) => onSubmitHandler(e)}>
-                <fieldset name='lists'>
-                {
-                    Object.keys(userLists).map(list => {
-                      if (list === 'favorites') return null
-                      return (
-                        <label key={list}>{list}
-                            <input
-                              type="radio"
-                              value={list}
-                              name="list"
-                              onChange={(e) => onListSelected(e)}
-                              checked={userLists[list].includes(game.id)}
-                            />
-                        </label>
-                      )
-                    })
-                }
-                </fieldset>
+  const coverForModal = game.cover.replace('t_cover_big', 't_screenshot_huge')
 
-                <label>Favorite
-                    <input type="checkbox" checked={userLists.favorites.includes(game.id)}/>
-                </label>
-                <button type="submit">Submit</button>
-            </form>
+  const onSubmitMiddleware = (e) => {
+    const newData = { ...user }
+    delete newData.userGamesData
+
+    onSubmitHandler(e, newData)
+  }
+  return (
+        <dialog className='edit-game-modal'>
+          <figure className='edit-game-img'>
+            <img src={`https://${coverForModal}`} alt={game.name + ' cover'} />
+          </figure>
+          <h2>{game.name}</h2>
+          <form onSubmit={(e) => onSubmitMiddleware(e)} className='edit-game-form'>
+            <InputList inputs={
+              Object.keys(userLists).map(list => {
+                return {
+                  id: list,
+                  name: list,
+                  isRadio: list !== 'favorites',
+                  isChecked: list !== 'favorites' ? selectedList === list : userLists.favorites.includes(game.id),
+                  onChangeHandler: list === 'favorites' ? onFavoriteHandler : null
+                }
+              })
+            }
+            fieldsetName="edit-game"
+            onChangeHandler={onListSelected} />
+            <button type="submit">Submit</button>
+          </form>
         </dialog>
   )
 }

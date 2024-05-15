@@ -7,6 +7,26 @@ const getUser = async (id) => {
   return response.data
 }
 
+const putUserData = async (newUserData, { userData, tokenExpiresCallback }) => {
+  try {
+    const response = await axios.put(`${BASE_URL}/${userData.id}/profile`, { userData: newUserData },
+      {
+        headers: {
+          Authorization: `Bearer ${userData.token}`
+        }
+      }
+    )
+
+    if (response.status === 200) {
+      return response.data
+    }
+  } catch (err) {
+    if (err.response.status === 401 && err.response.data.error === 'invalid token') {
+      tokenExpiresCallback()
+    }
+  }
+}
+
 const postOrEditGameData = async (gameData, { userData, tokenExpiresCallback }) => {
   try {
     const response = await axios.post(`${BASE_URL}/${userData.id}/game`, gameData,
@@ -35,5 +55,6 @@ const postOrEditGameData = async (gameData, { userData, tokenExpiresCallback }) 
 
 export default {
   getUser,
-  postOrEditGameData
+  postOrEditGameData,
+  putUserData
 }

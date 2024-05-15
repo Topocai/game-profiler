@@ -1,0 +1,84 @@
+.input-list {
+  color: white;
+  border: 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-flow: row wrap;
+
+  width: 90%;
+
+  margin-bottom: 3%;
+}
+  
+.list-input-container input {
+  display: none;
+}
+
+.list-input-container {
+  width: 30%;
+  height: 100%;
+}
+
+@media (width < 800px) {
+  .input-list {
+    flex-flow: column;
+  }
+  .list-input-container {
+    width: 100%;
+  }
+}
+  
+.list-input-container label {
+  cursor: pointer;
+  
+  display: block;
+  position: relative;
+
+  background-color: rgb(49, 49, 128);
+  padding: 5px 10px 5px 30px;
+  font-size: 100%;
+
+  border-radius: 5px;
+  border: 2px solid #46465f;
+  
+  transition: 0.4s ease-in-out;
+}
+
+.list-input-radio label:after,
+.list-input-radio label:before {
+  content: "";
+  position: absolute;
+  border-radius: 25%;
+}
+
+.list-input-container label:after {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #524eee;
+  left: 10px;
+  top: 30%;
+}
+
+.list-input-container label:before {
+  background: #524eee;
+  width: 14px;
+  height: 14px;
+  left: 10px;
+  top: 30%;
+  transform: scale(5);
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.4s ease-in-out 0s;
+}
+
+.list-input-container input[type="radio"]:checked ~ label::before {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.list-input-container input:checked ~ label {
+  border-color: #524eee;
+}
+  
