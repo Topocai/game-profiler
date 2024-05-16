@@ -10,21 +10,22 @@ function UserData (
 ) {
   this.user_name = displayName
   this.user_id = userId
-  this.user_avatar = userDataObject.user_avatar || null
-  this.user_gender = userDataObject.user_gender || null
-  this.user_platform = userDataObject.user_platform || []
-  this.birthday = userDataObject.birthday || null
-  this.created_at = userDataObject.created_at || Date.now()
-  this.gamesList = userDataObject.gamesList ||
-    {
-      finished: [],
-      playing: [],
-      abandoned: [],
-      on_hold: [],
-      wishlist: [],
-      favorites: []
-    }
-  this.userGamesData = userDataObject.userGamesData || [] // array of UserGameData objects
+  this.user_avatar = userDataObject ? userDataObject.user_avatar : null
+  this.user_gender = userDataObject ? userDataObject.user_gender : null
+  this.user_platform = userDataObject ? userDataObject.user_platform : []
+  this.birthday = userDataObject ? userDataObject.birthday : null
+  this.created_at = userDataObject ? userDataObject.created_at : Date.now()
+  this.gamesList = userDataObject
+    ? userDataObject.gamesList
+    : {
+        finished: [],
+        playing: [],
+        abandoned: [],
+        on_hold: [],
+        wishlist: [],
+        favorites: []
+      }
+  this.userGamesData = userDataObject ? userDataObject.userGamesData : [] // array of UserGameData objects
 }
 
 /**

@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react'
+import { useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import PropTypes from 'prop-types'
 
 import userServices from '../services/user'
 import UserProfile from './UserProfile'
 
-const UserSection = ({ userId }) => {
+const UserSection = forwardRef(function UserSection (props, ref) {
   const [userInfo, setUserInfo] = useState(null)
+  const { userId } = props
 
   useEffect(() => {
     async function getUser () {
@@ -14,6 +15,17 @@ const UserSection = ({ userId }) => {
       setUserInfo(user)
     }
     getUser()
+  }, [userId])
+
+  const updateLists = (newListsObject) => {
+    if (!userInfo) return
+    setUserInfo({ ...userInfo, UserData: { ...userInfo.UserData, gamesList: newListsObject } })
+  }
+
+  useImperativeHandle(ref, () => {
+    return {
+      updateLists
+    }
   }, [])
 
   if (userInfo === null) return null
@@ -39,7 +51,7 @@ const UserSection = ({ userId }) => {
     </section>
 
   )
-}
+})
 
 UserSection.propTypes = {
   userId: PropTypes.string.isRequired

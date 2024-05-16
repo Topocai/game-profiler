@@ -6,6 +6,7 @@ module.exports = {
     node: true
   },
   extends: 'standard',
+  ignorePatterns: ['dist', '.eslintrc.cjs'],
   overrides: [
     {
       env: {
