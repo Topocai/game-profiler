@@ -1,7 +1,7 @@
 const variablesRouter = require('express').Router()
 
 const variables = require('../variables.js')
-
+/*
 const iterateVariableObject = (variablesObject) => {
   const response = Object.entries(variablesObject).map(([key, value]) => {
     const newObject = {}
@@ -9,24 +9,24 @@ const iterateVariableObject = (variablesObject) => {
     return newObject
   })
   return response
-}
+} */
 
 variablesRouter.get('/genders', (req, res) => {
   const { genders } = variables
 
-  res.json(iterateVariableObject(genders))
+  res.json(genders)
 })
 
-variablesRouter.get('/plataforms', (req, res) => {
-  const { plataforms } = variables
+variablesRouter.get('/platforms', (req, res) => {
+  const { platforms } = variables
 
-  res.json(iterateVariableObject(plataforms))
+  res.json(platforms)
 })
 
 variablesRouter.get('/gameStates', (req, res) => {
   const { gameStates } = variables
 
-  res.json(iterateVariableObject(gameStates))
+  res.json(gameStates)
 })
 
 module.exports = variablesRouter

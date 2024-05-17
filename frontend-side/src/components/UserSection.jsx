@@ -47,6 +47,16 @@ const UserSection = forwardRef(function UserSection (props, ref) {
 
   return (
     <section>
+        <article className='tabs-container'>
+          <div className="tab-container">
+            <input type="radio" name="tabs" id="user" />
+            <label htmlFor="user">User Profile</label>
+          </div>
+          <div className="tab-container">
+            <input type="radio" name="tabs" id="games" />
+            <label htmlFor="games">User Games</label>
+          </div>
+        </article>
         <UserProfile userProfile={userProfile} />
     </section>
 

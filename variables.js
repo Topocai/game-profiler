@@ -37,7 +37,7 @@ const genders = Object.freeze({
   }
 })
 
-const plataforms = Object.freeze({
+const platforms = Object.freeze({
   PC: {
     id: 'pc',
     display: 'PC'
@@ -77,10 +77,14 @@ const gameStates = Object.freeze({
     id: 'on_hold',
     display: 'On Hold'
   },
-  PLAN_TO_PLAY: {
-    id: 'plan_to_play',
-    display: 'Plan to play'
+  WISHLIST: {
+    id: 'wishlist',
+    display: 'Wishlist'
+  },
+  FAVORITES: {
+    id: 'favorites',
+    display: 'Favorites'
   }
 })
 
-module.exports = { genders, plataforms, gameStates }
+module.exports = { genders, platforms, gameStates }

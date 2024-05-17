@@ -29,6 +29,8 @@ const SimpleGameCard = ({ size, game, cover, onClickHandler, style }) => {
   if (size === cardSizes.SMALL) {
     cardStyleTemplate.height = '180px'
     cardStyleTemplate.width = '120px'
+    cardStyleTemplate.maxHeight = '120px'
+    cardStyleTemplate.maxWidth = '80px'
     cardStyleTemplate.boxShadow = 'rgba(0, 0, 0, 0.35) 0px -90px 36px -28px inset'
     cardStyleTemplate.backdropFilter = 'blur(2px)'
   }

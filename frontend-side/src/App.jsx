@@ -10,18 +10,13 @@ import EditGame from './components/EditGame'
 import gameServices from './services/games'
 import loginService from './services/login'
 import userServices from './services/user'
+// eslint-disable-next-line no-unused-vars
 import testingObjects from './services/testingObjects'
-
-const userStates = {
-  LOGGED: 'logged',
-  LOGOUT: 'logout'
-}
-
-const appStateBody = {
-  userSection: userStates.LOADING
-}
+import variables from './variables'
 
 const searchArray = ['this', 'is', 'a', 'easter', 'egg']
+
+const LIMIT_PER_SEARCH = 6
 
 const App = () => {
   // const [appState, setAppState] = useState({ ...appStateBody })
@@ -32,22 +27,26 @@ const App = () => {
   const userSectionRef = useRef(null)
 
   useEffect(() => {
-    console.log('games effect')
+    // Initiate games
     async function getGames (amount) {
       const gamesResult = await gameServices.getGames(amount)
       const gamesWithCovers = await gameServices.getCoversFromArray(gamesResult)
 
       setGames(gamesWithCovers)
     }
-    const GAME_COUNT = 6
-    getGames(GAME_COUNT)
+    async function setLiveVariables () {
+      await variables.LIVE_VARIABLES.updateVariables()
+    }
+    getGames(LIMIT_PER_SEARCH)
+    setLiveVariables()
+    // Check if user has logged
     const isLogged = window.localStorage.getItem('user')
     if (isLogged) {
       setUser(JSON.parse(isLogged))
     }
   }, [])
 
-  const onSubmitHandler = async (event, { gameName }) => {
+  const onSearchHandler = async (event, { gameName }) => {
     event.preventDefault()
     setGames(searchArray)
     const searchResult = await gameServices.getGamesBySearch(gameName)
@@ -91,30 +90,29 @@ const App = () => {
     console.log(response)
     setSelectedGame(null)
   }
-
+  /*
   const testHandler = (e) => {
     e.preventDefault()
-    userSectionRef.current.updateLists(testingObjects.dummyLists)
-  }
+    console.log(variables.LIVE_VARIABLES.GENRES)
+  } */
 
   return (
-    <>
-      {
-        userLogged.token
-          ? <button onClick={onLogoutHandler}>Logout</button>
-          : <UserLogin onLogin={onLoginHandler} />
-      }
-      {
-        (userLogged.token && selectedGame) && <EditGame game={selectedGame} userLogged={userLogged} onSubmitHandler={addOrModifyGameHandler} />
-      }
-      <form onSubmit={(e) => onSubmitHandler(e, { gameName: e.target[0].value })}>
-        <input type='text' placeholder='Ingresa el nombre de un juego'/>
-        <button type='submit'>Buscar</button>
-      </form>
-      <CardGrid size={'normal'} games={games} onGameClickHandler={onGameClick} />
-      {userLogged.token && <UserSection userId={userLogged.id} ref={userSectionRef} />}
-      <button onClick={(e) => testHandler(e)}>Test</button>
-    </>
+     <main>
+        {
+          userLogged.token
+            ? <button onClick={onLogoutHandler}>Logout</button>
+            : <UserLogin onLogin={onLoginHandler} />
+        }
+        <form onSubmit={(e) => onSearchHandler(e, { gameName: e.target[0].value })}>
+          <input type='text' placeholder='Ingresa el nombre de un juego'/>
+          <button type='submit'>Buscar</button>
+        </form>
+        {
+          (userLogged.token && selectedGame) && <EditGame game={selectedGame} userLogged={userLogged} onSubmitHandler={addOrModifyGameHandler} />
+        }
+        <CardGrid size={'normal'} games={games} onGameClickHandler={onGameClick} />
+        {userLogged.token && <UserSection userId={userLogged.id} ref={userSectionRef} />}
+     </main>
   )
 }
 

@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 
 import userServices from '../services/user'
-import PropTypes from 'prop-types'
+import variables from '../variables'
 
 import './styles/edit-game-modal.css'
 
@@ -80,7 +81,7 @@ const EditGame = ({ game, userLogged, onSubmitHandler }) => {
               Object.keys(userLists).map(list => {
                 return {
                   id: list,
-                  name: list,
+                  name: variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display,
                   isRadio: list !== 'favorites',
                   isChecked: list !== 'favorites' ? selectedList === list : userLists.favorites.includes(game.id),
                   onChangeHandler: list === 'favorites' ? onFavoriteHandler : null

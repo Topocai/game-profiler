@@ -9,3 +9,50 @@ article {
 .react-datepicker-wrapper {
     max-width: 100%;
 }
+
+main {
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 0 2vw;
+  padding: 0 2vw;
+
+  max-width: 1024px;
+}
+  
+.tabs-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1;
+  gap: 10px;
+  color: var(--text-color)
+}
+
+.tab-container input {
+  display: none;
+}
+
+.tab-container {
+  display: flex;
+}
+
+.tab-container label {
+  color: var(--text-color);
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 100%;
+  border: 1px solid var(--tab-border-color);
+  border-radius: 10px;
+  text-align: center;
+  padding-top: 2%;
+  padding-bottom: 2%;
+  transition: 0.7s ease-out background, 2s color ease;
+}
+
+.tab-container label:hover {
+  background-color: var(--tab-hover-color);
+}
+
+.tab-container input:checked ~ label {
+  background-color: var(--tab-checked-color);
+  transition: 0.1s ease-in-out background;
+}
