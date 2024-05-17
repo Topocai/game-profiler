@@ -32,7 +32,7 @@ const SimpleGameCard = ({ size, game, cover, onClickHandler, style }) => {
     cardStyleTemplate.maxHeight = '120px'
     cardStyleTemplate.maxWidth = '80px'
     cardStyleTemplate.boxShadow = 'rgba(0, 0, 0, 0.35) 0px -90px 36px -28px inset'
-    cardStyleTemplate.backdropFilter = 'blur(2px)'
+    cardStyleTemplate.backgroundSize = 'cover'
   }
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const SimpleGameCard = ({ size, game, cover, onClickHandler, style }) => {
           }
           {
             size === cardSizes.SMALL &&
-            <div style={{ backdropFilter: 'blur(1px)', width: '100%', height: '100%' }}></div>
+            <div style={{ width: '100%', height: '100%' }}></div>
           }
       </article>
   )
