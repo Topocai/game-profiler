@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 
-import './styles/simpleGameCard.css'
+import '../styles/simpleGameCard.css'
 import PropTypes from 'prop-types'
 
-import gameServices from '../services/games'
+import gameServices from '../../services/games'
 
-import variables from '../variables'
+import variables from '../../variables'
 
 const getDateFromTimestamp = (timestamp) => {
   const date = new Date(timestamp * 1000)

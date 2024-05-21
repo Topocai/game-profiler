@@ -1,7 +1,7 @@
 import SimpleGameCard from './simpleGameCard'
 import PropTypes from 'prop-types'
 
-import './styles/card-grid.css'
+import '../styles/card-grid.css'
 
 const cardSizes = {
   NORMAL: 'normal',

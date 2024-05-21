@@ -2,10 +2,10 @@
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-import userServices from '../services/user'
-import variables from '../variables'
+import userServices from '../../services/user'
+import variables from '../../variables'
 
-import './styles/edit-game-modal.css'
+import '../styles/edit-game-modal.css'
 
 import InputList from './InputList'
 

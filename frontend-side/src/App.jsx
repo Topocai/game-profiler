@@ -2,10 +2,10 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
 
-import CardGrid from './components/CardGrid'
-import UserSection from './components/UserSection'
-import UserLogin from './components/UserLogin'
-import EditGame from './components/EditGame'
+import CardGrid from './components/common/CardGrid'
+import UserSection from './components/user-profile/UserSection'
+import UserLogin from './components/auth/UserLogin'
+import EditGame from './components/common/EditGame'
 
 import gameServices from './services/games'
 import loginService from './services/login'

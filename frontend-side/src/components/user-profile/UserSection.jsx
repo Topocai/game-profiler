@@ -2,7 +2,7 @@
 import { useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import PropTypes from 'prop-types'
 
-import userServices from '../services/user'
+import userServices from '../../services/user'
 import UserProfile from './UserProfile'
 import UserGames from './UserGames'
 

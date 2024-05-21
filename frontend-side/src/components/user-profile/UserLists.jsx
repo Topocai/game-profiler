@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 
-import gameServices from '../services/games'
-import CardGrid from './CardGrid'
+import gameServices from '../../services/games'
+import CardGrid from '../common/CardGrid'
 
 const UserLists = ({ listsData }) => {
   const [gamesFromList, setGames] = useState([])

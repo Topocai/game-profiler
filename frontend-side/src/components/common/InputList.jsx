@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 
-import './styles/input-list.css'
+import '../styles/input-list.css'
 
 const InputList = ({ inputs, fieldsetName, onChangeHandler = () => {} }) => {
   /**

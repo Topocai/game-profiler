@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 
-import CardGrid from './CardGrid'
+import CardGrid from '../common/CardGrid'
 
-import variables from '../variables'
+import variables from '../../variables'
 
 const UserGames = ({ gamesLists }) => {
   const [gamesDisplayed, setGamesDisplayed] = useState({

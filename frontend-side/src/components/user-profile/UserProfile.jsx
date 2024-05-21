@@ -1,9 +1,9 @@
-import './styles/user-profile.css'
+import '../styles/user-profile.css'
 import PropTypes from 'prop-types'
 
-import CardGrid from './CardGrid'
+import CardGrid from '../common/CardGrid'
 
-import variables from '../variables'
+import variables from '../../variables'
 
 /*
 const fillLists = async (lists) => {
@@ -60,7 +60,7 @@ const UserProfile = ({ userProfile, gamesLists, onGameLoadHandler }) => {
               ? Object.keys(gamesLists).map(list => {
                 return (
                   <div key={list} className='user-profile-games-list'>
-                    <strong>{variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display}</strong>
+                    <strong>{variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display} {gamesLists[list].length}</strong>
                     <CardGrid size={'small'} context={gridContext.USER_MINI_LIST} games={gamesLists[list]} onGameLoadHandler={onGameLoadHandler} cardsGroup={list} />
                   </div>
                 )
