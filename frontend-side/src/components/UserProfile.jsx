@@ -23,21 +23,13 @@ const gridContext = {
   USER_MINI_LIST: 'user-mini-list'
 }
 
-const UserProfile = ({ userProfile }) => {
+const UserProfile = ({ userProfile, gamesLists, onGameLoadHandler }) => {
   const {
     userAvatar,
     userName,
     gender,
-    platforms,
-    gamesLists
+    platforms
   } = userProfile
-  /*
-  async function getLists () {
-    const lists = await fillLists(gamesLists)
-    setUserLists(lists)
-  }
-
-  getLists() */
 
   if (userProfile.length === 0) return
 
@@ -69,7 +61,7 @@ const UserProfile = ({ userProfile }) => {
                 return (
                   <div key={list} className='user-profile-games-list'>
                     <strong>{variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display}</strong>
-                    <CardGrid size={'small'} context={gridContext.USER_MINI_LIST} games={gamesLists[list]} />
+                    <CardGrid size={'small'} context={gridContext.USER_MINI_LIST} games={gamesLists[list]} onGameLoadHandler={onGameLoadHandler} cardsGroup={list} />
                   </div>
                 )
               })
@@ -82,7 +74,9 @@ const UserProfile = ({ userProfile }) => {
 }
 
 UserProfile.propTypes = {
-  userProfile: PropTypes.object.isRequired
+  userProfile: PropTypes.object.isRequired,
+  onGameLoadHandler: PropTypes.func.isRequired,
+  gamesLists: PropTypes.object.isRequired
 }
 
 export default UserProfile

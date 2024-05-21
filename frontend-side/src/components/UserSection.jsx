@@ -4,15 +4,32 @@ import PropTypes from 'prop-types'
 
 import userServices from '../services/user'
 import UserProfile from './UserProfile'
+import UserGames from './UserGames'
 
 const UserSection = forwardRef(function UserSection (props, ref) {
   const [userInfo, setUserInfo] = useState(null)
+  const [allGames, setAllGames] = useState({
+    loaded: 0,
+    total: 0,
+    gamesList: {
+      finished: [],
+      playing: [],
+      abandoned: [],
+      on_hold: [],
+      wishlist: [],
+      favorites: []
+    }
+  })
+
+  const [activeTab, setActiveTab] = useState('user')
   const { userId } = props
 
   useEffect(() => {
     async function getUser () {
       const user = await userServices.getUser(userId)
       setUserInfo(user)
+      const gamesCount = Object.values(user.UserData.gamesList).reduce((acc, val) => acc + val.length, 0)
+      setAllGames({ ...allGames, total: gamesCount })
     }
     getUser()
   }, [userId])
@@ -27,6 +44,18 @@ const UserSection = forwardRef(function UserSection (props, ref) {
       updateLists
     }
   }, [])
+
+  const addGame = (gameInfo) => {
+    if (allGames.total === allGames.loaded) return
+    setAllGames(prevData => ({
+      ...prevData,
+      loaded: prevData.loaded + 1,
+      gamesList: {
+        ...prevData.gamesList,
+        [gameInfo.cardList]: [...prevData.gamesList[gameInfo.cardList], gameInfo]
+      }
+    }))
+  }
 
   if (userInfo === null) return null
 
@@ -49,15 +78,33 @@ const UserSection = forwardRef(function UserSection (props, ref) {
     <section>
         <article className='tabs-container'>
           <div className="tab-container">
-            <input type="radio" name="tabs" id="user" />
+            <input
+              type="radio"
+              name="tabs"
+              id="user"
+              checked={activeTab === 'user'}
+              onChange={() => setActiveTab('user')}
+            />
             <label htmlFor="user">User Profile</label>
           </div>
           <div className="tab-container">
-            <input type="radio" name="tabs" id="games" />
+            <input
+              type="radio"
+              name="tabs"
+              id="games"
+              checked={activeTab === 'games'}
+              onChange={() => setActiveTab('games')}
+              disabled={allGames.loaded !== allGames.total}
+            />
             <label htmlFor="games">User Games</label>
           </div>
         </article>
-        <UserProfile userProfile={userProfile} />
+        { activeTab === 'user' &&
+        <UserProfile
+        userProfile={userProfile}
+        gamesLists={allGames.loaded === allGames.total ? allGames.gamesList : userProfile.gamesLists}
+        onGameLoadHandler={addGame} />}
+        { activeTab === 'games' && <UserGames gamesLists={allGames.gamesList} /> }
     </section>
 
   )

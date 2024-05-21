@@ -17,6 +17,7 @@ main {
   padding: 0 2vw;
 
   max-width: 1024px;
+  width: 80vw;
 }
   
 .tabs-container {

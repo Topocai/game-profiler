@@ -7,7 +7,8 @@ const CARD_SIZES = {
 
 const GRID_CARD_CONTEXTS = {
   NORMAL: 'normal',
-  USER_MINI_LIST: 'user-mini-list'
+  USER_MINI_LIST: 'user-mini-list',
+  USER_LIST: 'user-list'
 }
 
 const LIVE_VARIABLES = {

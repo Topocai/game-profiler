@@ -6,6 +6,8 @@ import PropTypes from 'prop-types'
 
 import gameServices from '../services/games'
 
+import variables from '../variables'
+
 const getDateFromTimestamp = (timestamp) => {
   const date = new Date(timestamp * 1000)
   const year = date.getFullYear()
@@ -19,21 +21,33 @@ const cardSizes = {
   SMALL: 'small'
 }
 
-const SimpleGameCard = ({ size, game, cover, onClickHandler, style }) => {
+const SimpleGameCard = ({ game, cover, cardProps, style }) => {
   const [gameContent, setGameContent] = useState({})
 
+  const {
+    size,
+    onClickHandler = () => {},
+    onGameLoadHandler = () => {},
+    cardGroup,
+    context
+  } = cardProps
+
+  // Sets the gameCard Style based on the size
   const cardStyleTemplate = {
     ...style,
-    backgroundPosition: 'center'
+    backgroundPosition: 'center',
+    backgroundSize: 'cover'
   }
+
   if (size === cardSizes.SMALL) {
     cardStyleTemplate.height = '180px'
     cardStyleTemplate.width = '120px'
     cardStyleTemplate.maxHeight = '120px'
     cardStyleTemplate.maxWidth = '80px'
     cardStyleTemplate.boxShadow = 'rgba(0, 0, 0, 0.35) 0px -90px 36px -28px inset'
-    cardStyleTemplate.backgroundSize = 'cover'
   }
+
+  // Gets the game data from igdb if the game is a number
 
   useEffect(() => {
     async function getGame () {
@@ -41,16 +55,19 @@ const SimpleGameCard = ({ size, game, cover, onClickHandler, style }) => {
       let coverUrl = await gameServices.getCover(gameInfo.id)
       gameInfo.cover = coverUrl
 
+      // Sets the cover url to HTTPS
       coverUrl = coverUrl.slice(coverUrl.indexOf('/upload/') + 8, coverUrl.length)
       coverUrl = `https://images.igdb.com/igdb/image/upload/${coverUrl}`
       const style = {
         ...cardStyleTemplate,
         backgroundImage: `url(${coverUrl})`
       }
-      setGameContent({ ...gameInfo, cardStyle: style })
+      setGameContent({ ...gameInfo, cardStyle: style, cardList: cardGroup })
     }
 
+    // Checks if the game data exists or if it is a ID
     if (typeof (game) !== 'object') {
+      // Sets an empty object if the game is not found for the load animation
       cardSizes.width = '250px'
       const newGameContent = {
         name: null,
@@ -61,6 +78,7 @@ const SimpleGameCard = ({ size, game, cover, onClickHandler, style }) => {
         cardStyle: cardStyleTemplate
       }
       setGameContent(newGameContent)
+      // While the game is loading get the game data
       if (!isNaN(Number(game))) { getGame() }
     } else {
       const newGameContent = {
@@ -73,24 +91,49 @@ const SimpleGameCard = ({ size, game, cover, onClickHandler, style }) => {
       }
       setGameContent(newGameContent)
     }
-  }, [])
+  }, [game])
 
-  if (onClickHandler === undefined) onClickHandler = () => console.log('Fucking easter egg')
+  // When the game data loads, call the function for the load animation
+  useEffect(() => {
+    if (!gameContent.name) return
+    onGameLoadHandler({ ...gameContent })
+  }, [gameContent])
 
   const preventDefaultHandler = (event) => {
     event.preventDefault()
     onClickHandler(game)
   }
   return (
-      <article title={gameContent.name} style={gameContent.cardStyle} className={`simple-game-card ${!gameContent.name ? 'loading-card' : ''}`} onClick={(e) => preventDefaultHandler(e)}>
+      <article
+      title={gameContent.name}
+      style={gameContent.cardStyle}
+      className={`simple-game-card ${!gameContent.name ? 'loading-card' : ''}`}
+      onClick={(e) => preventDefaultHandler(e)}>
           {
-            size === cardSizes.NORMAL &&
-            <article className='simple-game-card-content' style={!gameContent.name ? { height: '300px' } : null}>
-              <h4><a href={gameContent.url}>{gameContent.name}</a></h4>
-              {gameContent.summary && gameContent.summary.length > 100
+            (size === cardSizes.NORMAL && context !== variables.GRID_CARD_CONTEXTS.USER_LIST) &&
+            <article
+            className='simple-game-card-content'
+            style={!gameContent.name ? { height: '300px' } : null}>
+              <h4>
+                <a href={gameContent.url}>{gameContent.name}</a>
+              </h4>
+              {
+              gameContent.summary && gameContent.summary.length > 100
                 ? <p>{gameContent.summary.slice(0, 100)}<a href={game.url}> ...</a></p>
-                : <p>{gameContent.summary}</p>}
+                : <p>{gameContent.summary}</p>
+              }
               <span>{gameContent.releaseDate}</span>
+            </article>
+          }
+          {
+            context === variables.GRID_CARD_CONTEXTS.USER_LIST &&
+            <article
+            className='simple-game-card-content'
+            >
+              <h4 style={{ margin: '0', fontSize: '0.75rem' }}>
+                <a href={gameContent.url}>{gameContent.name}</a>
+              </h4>
+              <span style={{ fontSize: '0.65rem' }}>{variables.LIVE_VARIABLES.GAME_LISTS[game.cardList.toUpperCase()].display}</span>
             </article>
           }
           {
@@ -102,10 +145,9 @@ const SimpleGameCard = ({ size, game, cover, onClickHandler, style }) => {
 }
 
 SimpleGameCard.propTypes = {
-  size: PropTypes.oneOf([cardSizes.NORMAL, cardSizes.SMALL]),
   game: PropTypes.oneOfType([PropTypes.object, PropTypes.string, PropTypes.number]),
   cover: PropTypes.string,
-  onClickHandler: PropTypes.func,
+  cardProps: PropTypes.object,
   style: PropTypes.object
 }
 
