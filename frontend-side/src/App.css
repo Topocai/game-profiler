@@ -49,6 +49,11 @@ main {
   transition: 0.7s ease-out background, 2s color ease;
 }
 
+.tab-container input:disabled ~ label {
+  border-color: var(--color-900);
+  color: var(--color-950);
+}
+
 .tab-container label:hover {
   background-color: var(--tab-hover-color);
 }

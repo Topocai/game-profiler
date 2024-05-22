@@ -27,6 +27,13 @@ const App = () => {
   const userSectionRef = useRef(null)
 
   useEffect(() => {
+    async function setLiveVariables () {
+      await variables.LIVE_VARIABLES.updateVariables()
+    }
+    setLiveVariables()
+  })
+
+  useEffect(() => {
     // Initiate games
     async function getGames (amount) {
       const gamesResult = await gameServices.getGames(amount)
@@ -34,11 +41,7 @@ const App = () => {
 
       setGames(gamesWithCovers)
     }
-    async function setLiveVariables () {
-      await variables.LIVE_VARIABLES.updateVariables()
-    }
     getGames(LIMIT_PER_SEARCH)
-    setLiveVariables()
     // Check if user has logged
     const isLogged = window.localStorage.getItem('user')
     if (isLogged) {
@@ -84,10 +87,15 @@ const App = () => {
     setSelectedGame(game)
   }
 
-  const addOrModifyGameHandler = async (event, newUserData) => {
+  const addOrModifyGameHandler = async (event, newUserData, listAdded, toFavorite) => {
     event.preventDefault()
+    if (!newUserData) {
+      setSelectedGame(null)
+      return
+    }
     const response = await userServices.putUserData(newUserData, { userData: userLogged, onTokenExpiresCallback: onTokenExpires })
     console.log(response)
+    userSectionRef.current.addGame({ ...selectedGame, cardList: listAdded }, listAdded, toFavorite)
     setSelectedGame(null)
   }
   /*

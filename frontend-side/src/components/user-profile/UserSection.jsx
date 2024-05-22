@@ -34,19 +34,22 @@ const UserSection = forwardRef(function UserSection (props, ref) {
     getUser()
   }, [userId])
 
-  const updateLists = (newListsObject) => {
-    if (!userInfo) return
-    setUserInfo({ ...userInfo, UserData: { ...userInfo.UserData, gamesList: newListsObject } })
+  const addGame = (gameInfo, listToAdd, toFav) => {
+    if (!allGames) return
+    setAllGames(prevData => ({
+      ...prevData,
+      gamesList: Object.keys(prevData.gamesList).reduce((acc, list) => {
+        const newList = (list === listToAdd || (toFav && list === 'favorites'))
+          ? [...prevData.gamesList[list], gameInfo]
+          : prevData.gamesList[list].filter(g => g.id !== gameInfo.id)
+        acc[list] = newList
+        return acc
+      }, {})
+    }))
   }
 
-  useImperativeHandle(ref, () => {
-    return {
-      updateLists
-    }
-  }, [])
-
-  const addGame = (gameInfo) => {
-    if (allGames.total === allGames.loaded) return
+  const loadGame = (gameInfo) => {
+    if (!gameInfo.cardList) return
     setAllGames(prevData => ({
       ...prevData,
       loaded: prevData.loaded + 1,
@@ -56,6 +59,13 @@ const UserSection = forwardRef(function UserSection (props, ref) {
       }
     }))
   }
+
+  useImperativeHandle(ref, () => {
+    return {
+      addGame,
+      getLoadedInfo: () => allGames.gamesList
+    }
+  }, [])
 
   if (userInfo === null) return null
 
@@ -94,7 +104,7 @@ const UserSection = forwardRef(function UserSection (props, ref) {
               id="games"
               checked={activeTab === 'games'}
               onChange={() => setActiveTab('games')}
-              disabled={allGames.loaded !== allGames.total}
+              disabled={allGames.loaded < allGames.total}
             />
             <label htmlFor="games">User Games</label>
           </div>
@@ -102,8 +112,8 @@ const UserSection = forwardRef(function UserSection (props, ref) {
         { activeTab === 'user' &&
         <UserProfile
         userProfile={userProfile}
-        gamesLists={allGames.loaded === allGames.total ? allGames.gamesList : userProfile.gamesLists}
-        onGameLoadHandler={addGame} />}
+        gamesLists={allGames.loaded >= allGames.total ? allGames.gamesList : userProfile.gamesLists}
+        onGameLoadHandler={loadGame} />}
         { activeTab === 'games' && <UserGames gamesLists={allGames.gamesList} /> }
     </section>
 

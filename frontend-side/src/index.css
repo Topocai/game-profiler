@@ -1,16 +1,29 @@
 :root {
     /* BASE  8753ea*/
- --tab-hover-color: #8545e2;
- --tab-checked-color: #7533ce;
- --tab-border-color: #8753ea;
- --text-color: #f6f4fe;
- --secondary-text-color: #331560;
- --terciary-text-color: #e0d9fb;
+ --color-950: #331560;
+ --color-900: #52258d;
+ --color-800:  #622aad;
+ --color-700:  #7533ce;
+ --color-600:  #8545e2;
+ --color-500:  #8753ea;
+ --color-400:  #ae92f3;
+ --color-300:  #c9baf8;
+ --color-200:  #e0d9fb;
+ --color-100:  #efeafd;
+ --color-50:  #f6f4fe;
+
+ --tab-hover-color: var(--color-600);
+ --tab-checked-color: var(--color-700);
+ --tab-border-color: var(--color-500);
+ 
+ --text-color: var(--color-50);
+ --secondary-text-color: var(--color-950);
+ --terciary-text-color: var(--color-200);
 
  --background-black: #18181b;
  --superblack: #0e0e11;
 
- --background-color: #331560;
+ --background-color: var(--color-950);
 }
 
 body {

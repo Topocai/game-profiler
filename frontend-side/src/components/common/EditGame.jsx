@@ -68,7 +68,7 @@ const EditGame = ({ game, userLogged, onSubmitHandler }) => {
     const newData = { ...user }
     delete newData.userGamesData
 
-    onSubmitHandler(e, newData)
+    onSubmitHandler(e, newData, selectedList, userLists.favorites.includes(game.id))
   }
   return (
         <dialog className='edit-game-modal'>
@@ -90,7 +90,8 @@ const EditGame = ({ game, userLogged, onSubmitHandler }) => {
             }
             fieldsetName="edit-game"
             onChangeHandler={onListSelected} />
-            <button type="submit">Submit</button>
+            <button type="submit">Add game</button>
+            <button onClick={(e) => onSubmitHandler(e, null)}>Cancel</button>
           </form>
         </dialog>
   )

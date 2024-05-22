@@ -35,12 +35,12 @@
   display: block;
   position: relative;
 
-  background-color: rgb(49, 49, 128);
+  background-color: var(--background-black);
   padding: 5px 10px 5px 30px;
   font-size: 100%;
 
   border-radius: 5px;
-  border: 2px solid #46465f;
+  border: 2px solid var(--color-500);
   
   transition: 0.4s ease-in-out;
 }
@@ -55,13 +55,13 @@
 .list-input-container label:after {
   width: 12px;
   height: 12px;
-  border: 2px solid #524eee;
+  border: 2px solid var(--color-700);
   left: 10px;
   top: 30%;
 }
 
 .list-input-container label:before {
-  background: #524eee;
+  background: var(--color-700);
   width: 14px;
   height: 14px;
   left: 10px;
@@ -79,6 +79,6 @@
 }
 
 .list-input-container input:checked ~ label {
-  border-color: #524eee;
+  border-color: var(--color-700);
 }
   
