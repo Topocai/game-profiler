@@ -15,6 +15,16 @@
         rgba(0, 0, 0, 0.35) 0px 5px 15px,
         rgba(0, 0, 0, 0.35) 0px -50px 36px -28px inset;
     
+    transition: 1s ease-in-out;
+}
+
+.simple-game-card:hover .simple-game-card-content {
+    opacity: 0;
+}
+
+.simple-game-card:hover {
+    cursor: pointer;
+    transform: scale(1.1) translateY(-10px);
 }
 
 .simple-game-card-content {
@@ -25,6 +35,7 @@
 
     padding: 5px 20px 10px 20px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px -90px 36px -28px inset;
+    transition: 0.5s ease-in-out all;
 }
 
 .simple-game-card-content span {
