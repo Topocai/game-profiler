@@ -73,7 +73,7 @@ const EditGame = ({ game, userLogged, onSubmitHandler }) => {
   return (
         <dialog className='edit-game-modal'>
           <figure className='edit-game-img'>
-            <img src={`https://${coverForModal}`} alt={game.name + ' cover'} />
+            <img src={`${coverForModal}`} alt={game.name + ' cover'} />
           </figure>
           <h2>{game.name}</h2>
           <form onSubmit={(e) => onSubmitMiddleware(e)} className='edit-game-form'>
