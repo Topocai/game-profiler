@@ -20,6 +20,10 @@ const getGamesBySearch = async (search) => {
 
 const getCover = async (id) => {
   const response = await axios.get(`${BASE_URL}/cover/${id}`)
+  if (response.data.toLowerCase() !== 'no cover found') {
+    const proxyUrl = `${BASE_URL}/proxy/cover?imageUrl=${encodeURIComponent(response.data)}`
+    return proxyUrl
+  }
   return response.data
 }
 

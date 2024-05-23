@@ -18,6 +18,14 @@
     transition: 1s ease-in-out;
 }
 
+.small-card { 
+    height: 180px;
+    width: 120px;
+    max-height: 120px;
+    max-width: 80px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px -90px 36px -28px inset;
+}
+
 .simple-game-card:hover .simple-game-card-content {
     opacity: 0;
 }

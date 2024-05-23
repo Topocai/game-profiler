@@ -32,19 +32,10 @@ const SimpleGameCard = ({ game, cover, cardProps, style }) => {
     context
   } = cardProps
 
-  // Sets the gameCard Style based on the size
   const cardStyleTemplate = {
     ...style,
     backgroundPosition: 'center',
     backgroundSize: 'cover'
-  }
-
-  if (size === cardSizes.SMALL) {
-    cardStyleTemplate.height = '180px'
-    cardStyleTemplate.width = '120px'
-    cardStyleTemplate.maxHeight = '120px'
-    cardStyleTemplate.maxWidth = '80px'
-    cardStyleTemplate.boxShadow = 'rgba(0, 0, 0, 0.35) 0px -90px 36px -28px inset'
   }
 
   // Gets the game data from igdb if the game is a number
@@ -52,12 +43,13 @@ const SimpleGameCard = ({ game, cover, cardProps, style }) => {
   useEffect(() => {
     async function getGame () {
       const gameInfo = await gameServices.getGameById(game)
-      let coverUrl = await gameServices.getCover(gameInfo.id)
-      gameInfo.cover = coverUrl
-
-      // Sets the cover url to HTTPS
-      coverUrl = coverUrl.slice(coverUrl.indexOf('/upload/') + 8, coverUrl.length)
-      coverUrl = `https://images.igdb.com/igdb/image/upload/${coverUrl}`
+      const coverUrl = await gameServices.getCover(gameInfo.id)
+      if (gameInfo && coverUrl) {
+        gameInfo.cover = coverUrl
+      } else if (!gameInfo) {
+        getGame()
+        return
+      }
       const style = {
         ...cardStyleTemplate,
         backgroundImage: `url(${coverUrl})`
@@ -107,7 +99,7 @@ const SimpleGameCard = ({ game, cover, cardProps, style }) => {
       <article
       title={gameContent.name}
       style={gameContent.cardStyle}
-      className={`simple-game-card ${!gameContent.name ? 'loading-card' : ''}`}
+      className={`simple-game-card ${!gameContent.name ? 'loading-card' : ''} ${size === cardSizes.SMALL ? 'small-card' : ''}`}
       onClick={(e) => preventDefaultHandler(e)}>
           {
             (size === cardSizes.NORMAL && context !== variables.GRID_CARD_CONTEXTS.USER_LIST) &&

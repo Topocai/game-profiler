@@ -47,7 +47,7 @@ const UserProfile = ({ userProfile, gamesLists, onGameLoadHandler }) => {
           <div className='user-profile-platform'>
             <h3>Platforms</h3>
             <div className='user-profile-platforms-container'>
-              {platforms.map(platform => <span key={platform}>{variables.LIVE_VARIABLES.PLATFORMS[platform.toUpperCase()].display}</span>)}
+              {platforms.map(platform => <span key={platform}>{variables.LIVE_VARIABLES.PLATFORMS[platform.toUpperCase()].display ? variables.LIVE_VARIABLES.PLATFORMS[platform.toUpperCase()].display : `IDK MEN ${platform}`}</span>)}
             </div>
           </div>
         </section>
@@ -60,7 +60,7 @@ const UserProfile = ({ userProfile, gamesLists, onGameLoadHandler }) => {
               ? Object.keys(gamesLists).map(list => {
                 return (
                   <div key={list} className='user-profile-games-list'>
-                    <strong>{variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display} {gamesLists[list].length}</strong>
+                    <strong>{variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display ? variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display : `IDK MEN ${list}`} {gamesLists[list].length}</strong>
                     <CardGrid size={'small'} context={gridContext.USER_MINI_LIST} games={gamesLists[list]} onGameLoadHandler={onGameLoadHandler} cardsGroup={list} />
                   </div>
                 )

@@ -1,6 +1,8 @@
 const gamesRouter = require('express').Router()
 const igbdbRequests = require('../igdb/requests.js')
 
+const axios = require('axios')
+
 gamesRouter.get('/cover/:id', async (req, res) => {
   const id = req.params.id
 
@@ -9,6 +11,23 @@ gamesRouter.get('/cover/:id', async (req, res) => {
   res.send(data)
 
   // .catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
+})
+
+gamesRouter.get('/proxy/cover', async (req, res) => {
+  const imageUrl = req.query.imageUrl
+
+  if (!imageUrl) {
+    return res.status(400).json({ error: 'imageUrl is required' })
+  }
+
+  const response = await axios.get(imageUrl, { responseType: 'stream' })
+
+  res.set({
+    'Content-Type': response.headers['content-type']
+    // 'Content-Length': response.headers['content-length']
+  })
+
+  response.data.pipe(res)
 })
 
 gamesRouter.get('/', async (req, res) => {
