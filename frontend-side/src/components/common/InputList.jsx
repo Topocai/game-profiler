@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 
 import '../styles/input-list.css'
 
-const InputList = ({ inputs, fieldsetName, onChangeHandler = () => {} }) => {
+const InputList = ({ inputs, fieldsetName, onChangeHandler = () => {}, disableInputs = false }) => {
   /**
      * inputs: [
      * {
@@ -12,10 +12,9 @@ const InputList = ({ inputs, fieldsetName, onChangeHandler = () => {} }) => {
      *   isChecked: false,
      *   onChangeHandler: () => {}
      * }]
-     */
-
+  */
   return (
-        <fieldset name={fieldsetName} className="input-list">
+        <fieldset name={fieldsetName} className="input-list" >
             {
               inputs.map((input) => {
                 return (
@@ -27,6 +26,7 @@ const InputList = ({ inputs, fieldsetName, onChangeHandler = () => {} }) => {
                       value={input.id}
                       checked={input.isChecked}
                       onChange={input.onChangeHandler ? input.onChangeHandler : onChangeHandler}
+                      disabled={disableInputs}
                     />
                     <label htmlFor={input.id} className="input-label">{input.name}</label>
                 </div>
@@ -40,7 +40,8 @@ const InputList = ({ inputs, fieldsetName, onChangeHandler = () => {} }) => {
 InputList.propTypes = {
   inputs: PropTypes.array.isRequired,
   fieldsetName: PropTypes.string.isRequired,
-  onChangeHandler: PropTypes.func
+  onChangeHandler: PropTypes.func,
+  disableInputs: PropTypes.bool
 }
 
 export default InputList

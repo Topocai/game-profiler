@@ -80,6 +80,24 @@ userRouter.get('/:id', async (req, res) => {
   return res.status(200).json(user)
 })
 
+userRouter.get('/', async (req, res) => {
+  const params = req.query
+
+  if (params.username) {
+    const user = await User.findOne({ username: params.username })
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+    const userData = await UserDataModel.findOne({ user_id: user.id })
+    if (!userData) {
+      return res.status(404).json({ error: 'User data not found' })
+    }
+    return res.status(200).json(userData)
+  }
+  const users = await User.find()
+  return res.status(200).json(users)
+})
+
 userRouter.use(middlewares.tokenVerify)
 
 // Modify user values (email) // Not in use

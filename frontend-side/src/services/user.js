@@ -2,9 +2,23 @@ import axios from 'axios'
 const BASE_URL = '/api/user'
 
 const getUser = async (id) => {
-  const response = await axios.get(BASE_URL + '/' + id)
+  try {
+    const response = await axios.get(BASE_URL + '/' + id)
+    return response.data
+  } catch {
+    return null
+  }
+}
 
-  return response.data
+const getUserDataByUsername = async (username) => {
+  console.log('getting', username)
+  try {
+    const response = await axios.get(BASE_URL + '/?username=' + username)
+    return response.data
+  } catch (err) {
+    console.error('a')
+    return null
+  }
 }
 
 const putUserData = async (newUserData, { userData, tokenExpiresCallback }) => {
@@ -56,5 +70,6 @@ const postOrEditGameData = async (gameData, { userData, tokenExpiresCallback }) 
 export default {
   getUser,
   postOrEditGameData,
-  putUserData
+  putUserData,
+  getUserDataByUsername
 }

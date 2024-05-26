@@ -81,4 +81,9 @@
 .list-input-container input:checked ~ label {
   border-color: var(--color-700);
 }
+
+.list-input-container input:disabled ~ label {
+  border-color: var(--color-900);
+  color: var(--color-700)
+}
   

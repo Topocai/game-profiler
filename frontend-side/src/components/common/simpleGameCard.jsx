@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 import '../styles/simpleGameCard.css'
 import PropTypes from 'prop-types'
@@ -16,20 +15,23 @@ const getDateFromTimestamp = (timestamp) => {
   return `${year}-${month}-${day}`
 }
 
-const cardSizes = {
-  NORMAL: 'normal',
-  SMALL: 'small'
-}
-
-const SimpleGameCard = ({ game, cover, cardProps, style }) => {
-  const [gameContent, setGameContent] = useState({})
+const SimpleGameCard = ({ game, cover = 'no cover found', cardProps = {}, style }) => {
+  const [gameContent, setGameContent] = useState({
+    id: null,
+    name: null,
+    url: '#',
+    summary: null,
+    releaseDate: ' ',
+    cardList: ' ',
+    cover
+  })
 
   const {
-    size,
+    size = variables.CARD_SIZES.NORMAL,
     onClickHandler = () => {},
-    onGameLoadHandler = () => {},
-    cardGroup,
-    context
+    onGameLoadHandler = () => {}, // Needs to be a useCallback
+    cardGroup = ' ',
+    context = variables.GRID_CARD_CONTEXTS.NORMAL
   } = cardProps
 
   const cardStyleTemplate = {
@@ -38,71 +40,97 @@ const SimpleGameCard = ({ game, cover, cardProps, style }) => {
     backgroundSize: 'cover'
   }
 
-  // Gets the game data from igdb if the game is a number
+  const getCover = useCallback(async () => {
+    const id = typeof (game) !== 'object' ? game : game.id
+    if (isNaN(Number(id))) return
+    if (!gameContent.name) return
+    if (gameContent.cover && gameContent.cover.toLowerCase() !== 'no cover found') return
+    if (cover && cover.toLowerCase() !== 'no cover found') return
 
+    const coverUrl = await gameServices.getCover(id)
+    if (!coverUrl || coverUrl.toLowerCase() === 'no cover found') {
+      console.log('repeat loop')
+      setTimeout(() => getCover(id), 10000)
+      return
+    }
+    setGameContent(prevData => ({ ...prevData, cover: coverUrl }))
+  }, [cover, gameContent.cover, gameContent.name, game])
+
+  // Gets the cover from igdb and retry if it is not found
   useEffect(() => {
-    async function getGame () {
+    getCover()
+  }, [gameContent.cover, getCover])
+
+  const getGame = useCallback(async () => {
+    if (gameContent.name) return
+    try {
       const gameInfo = await gameServices.getGameById(game)
-      const coverUrl = await gameServices.getCover(gameInfo.id)
-      if (gameInfo && coverUrl) {
-        gameInfo.cover = coverUrl
-      } else if (!gameInfo) {
+
+      if (!gameContent.cover || gameContent.cover.toLowerCase() === 'no cover found') {
+        const coverUrl = await gameServices.getCover(game)
+        if (coverUrl !== '') gameInfo.cover = coverUrl
+      } else {
+        gameInfo.cover = gameContent.cover
+      }
+
+      if (!gameInfo) {
+        console.log('Error, looping', game)
         getGame()
         return
       }
-      const style = {
-        ...cardStyleTemplate,
-        backgroundImage: `url(${coverUrl})`
-      }
-      setGameContent({ ...gameInfo, cardStyle: style, cardList: cardGroup })
+      setGameContent({ ...gameInfo, cardList: cardGroup })
+    } catch {
+      console.log('Error, looping catch', game)
+      getGame()
     }
+  }, [cardGroup, game, gameContent])
 
+  // Gets the game data from igdb if the game is a number
+  useEffect(() => {
     // Checks if the game data exists or if it is a ID
     if (typeof (game) !== 'object') {
-      // Sets an empty object if the game is not found for the load animation
-      cardSizes.width = '250px'
-      const newGameContent = {
-        name: null,
-        url: '#',
-        summary: null,
-        releaseDate: ' ',
-        cover: 'No cover found',
-        cardStyle: cardStyleTemplate
-      }
-      setGameContent(newGameContent)
-      // While the game is loading get the game data
       if (!isNaN(Number(game))) { getGame() }
-    } else {
-      const newGameContent = {
-        name: game.name,
-        url: game.url,
-        summary: game.summary,
-        releaseDate: getDateFromTimestamp(game.first_release_date),
-        cover,
-        cardStyle: { ...cardStyleTemplate, backgroundImage: `url(${cover})` }
-      }
-      setGameContent(newGameContent)
+      return
     }
-  }, [game])
+    if (gameContent.name) return
+    const newGameContent = {
+      id: game.id,
+      name: game.name,
+      url: game.url,
+      summary: game.summary,
+      releaseDate: getDateFromTimestamp(game.first_release_date),
+      cardList: game.cardList ? game.cardList : cardGroup,
+      cover
+    }
+    setGameContent(newGameContent)
+  }, [game, cover, getGame, gameContent, cardGroup])
 
   // When the game data loads, call the function for the load animation
   useEffect(() => {
     if (!gameContent.name) return
     onGameLoadHandler({ ...gameContent })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameContent])
 
   const preventDefaultHandler = (event) => {
     event.preventDefault()
     onClickHandler(game)
   }
+
+  if (!gameContent.name) cardStyleTemplate.width = '250px'
+
   return (
       <article
       title={gameContent.name}
-      style={gameContent.cardStyle}
-      className={`simple-game-card ${!gameContent.name ? 'loading-card' : ''} ${size === cardSizes.SMALL ? 'small-card' : ''}`}
+      style={{
+        ...cardStyleTemplate,
+        backgroundImage: `url(${gameContent.cover})`
+      }}
+      className={`simple-game-card ${!gameContent.name ? 'loading-card' : ''} ${size === variables.CARD_SIZES.SMALL ? 'small-card' : ''}`}
+      role='button'
       onClick={(e) => preventDefaultHandler(e)}>
           {
-            (size === cardSizes.NORMAL && context !== variables.GRID_CARD_CONTEXTS.USER_LIST) &&
+            (size === variables.CARD_SIZES.NORMAL && context !== variables.GRID_CARD_CONTEXTS.USER_LIST) &&
             <article
             className='simple-game-card-content'
             style={!gameContent.name ? { height: '300px' } : null}>
@@ -125,11 +153,15 @@ const SimpleGameCard = ({ game, cover, cardProps, style }) => {
               <h4 style={{ margin: '0', fontSize: '0.75rem' }}>
                 <a href={gameContent.url}>{gameContent.name}</a>
               </h4>
-              <span style={{ fontSize: '0.65rem' }}>{variables.LIVE_VARIABLES.GAME_LISTS[game.cardList.toUpperCase()].display}</span>
+              <span style={{ fontSize: '0.65rem' }}>
+              {Object.keys(variables.LIVE_VARIABLES.GAME_LISTS).includes(gameContent.cardList.toUpperCase())
+                ? variables.LIVE_VARIABLES.GAME_LISTS[gameContent.cardList.toUpperCase()].display
+                : '--'}
+              </span>
             </article>
           }
           {
-            size === cardSizes.SMALL &&
+            size === variables.CARD_SIZES.SMALL &&
             <div style={{ width: '100%', height: '100%' }}></div>
           }
       </article>
@@ -137,7 +169,7 @@ const SimpleGameCard = ({ game, cover, cardProps, style }) => {
 }
 
 SimpleGameCard.propTypes = {
-  game: PropTypes.oneOfType([PropTypes.object, PropTypes.string, PropTypes.number]),
+  game: PropTypes.oneOfType([PropTypes.object, PropTypes.string, PropTypes.number]).isRequired,
   cover: PropTypes.string,
   cardProps: PropTypes.object,
   style: PropTypes.object

@@ -58,7 +58,9 @@ gamesRouter.get('/:id', async (req, res) => {
 gamesRouter.get('/search/:name', async (req, res) => {
   const name = req.params.name
 
-  const data = await igbdbRequests.GetGameByName(req.body.igdb_token, name)
+  const conditions = req.query.conditions ? req.query.conditions : null
+
+  const data = await igbdbRequests.GetGameByName(req.body.igdb_token, name, { conditions })
   res.send(data)
   // .catch((error) => res.status(error.satusCode || 500).json({error: error.message}))
 })

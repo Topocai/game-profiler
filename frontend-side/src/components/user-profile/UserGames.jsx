@@ -5,7 +5,7 @@ import CardGrid from '../common/CardGrid'
 
 import variables from '../../variables'
 
-const UserGames = ({ gamesLists }) => {
+const UserGames = ({ gamesLists, onGameClickHandler }) => {
   const [gamesDisplayed, setGamesDisplayed] = useState({
     listsDisplayed: [],
     games: []
@@ -32,7 +32,15 @@ const UserGames = ({ gamesLists }) => {
     }))
   }
 
-  const onListSelected = (event, list) => {
+  const onListSelected = (list) => {
+    if (list === 'favorites') {
+      setGamesDisplayed({
+        listsDisplayed: ['favorites'],
+        games: gamesLists.favorites
+      })
+      return
+    }
+
     if (gamesDisplayed.listsDisplayed.includes('favorites')) {
       setGamesDisplayed({
         listsDisplayed: [],
@@ -52,7 +60,6 @@ const UserGames = ({ gamesLists }) => {
             <article className='tabs-container'>
                 {
                   Object.keys(gamesLists).map(list => {
-                    if (list === 'favorites') return null
                     return (
                       <div className="tab-container" key={list}>
                         <input
@@ -60,7 +67,7 @@ const UserGames = ({ gamesLists }) => {
                           name="tabs"
                           id={list}
                           checked={gamesDisplayed.listsDisplayed.includes(list)}
-                          onChange={(event) => onListSelected(event, list)}
+                          onChange={() => onListSelected(list)}
                         />
                         <label htmlFor={list}>{variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display}</label>
                       </div>
@@ -68,13 +75,14 @@ const UserGames = ({ gamesLists }) => {
                   })
                 }
             </article>
-            <CardGrid games={gamesDisplayed.games} context={variables.GRID_CARD_CONTEXTS.USER_LIST} />
+            <CardGrid games={gamesDisplayed.games} context={variables.GRID_CARD_CONTEXTS.USER_LIST} onGameClickHandler={onGameClickHandler} />
         </section>
   )
 }
 
 UserGames.propTypes = {
-  gamesLists: PropTypes.object.isRequired
+  gamesLists: PropTypes.object.isRequired,
+  onGameClickHandler: PropTypes.func.isRequired
 }
 
 export default UserGames

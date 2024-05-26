@@ -3,18 +3,16 @@ const BASE_URL = '/api/games'
 
 const getGames = async (limit = 5) => {
   const randomRating = Math.floor(Math.random() * 22) + 78
-  console.log(randomRating)
+  console.log('R RNG', randomRating)
   const conditions = encodeURIComponent('aggregated_rating <' + `${randomRating}` + ' & summary != null & cover != null')
   const fields = 'aggregated_rating'
   const sort = 'aggregated_rating%20desc'
   const response = await axios.get(BASE_URL + '?conditions=' + conditions + '&fields=' + fields + '&sort=' + sort + '&limit=' + Number(limit))
-  console.log(response.data)
   return response.data
 }
 
-const getGamesBySearch = async (search) => {
-  const response = await axios.get(`${BASE_URL}/search/${search}`)
-  console.log(response.data)
+const getGamesBySearch = async (search, conditions = null) => {
+  const response = await axios.get(`${BASE_URL}/search/${search}?${conditions ? 'conditions=' + conditions : ''}`)
   return response.data
 }
 
@@ -28,16 +26,18 @@ const getCover = async (id) => {
 }
 
 const getGameById = async (id) => {
-  const response = await axios.get(`${BASE_URL}/${id}`)
-  // console.log('Game ', response.data)
-  return response.data
+  try {
+    const response = await axios.get(`${BASE_URL}/${id}`)
+    return response.data
+  } catch {
+    return null
+  }
 }
 
 const getGamesFromArray = async (games) => {
   const gamesHandler = games
   let newArray = gamesHandler.map(game => getGameById(game))
   newArray = await Promise.all(newArray)
-  console.log('ARray ', newArray)
 
   return newArray
 }

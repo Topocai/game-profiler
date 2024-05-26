@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
@@ -32,7 +31,7 @@ const EditGame = ({ game, userLogged, onSubmitHandler }) => {
       } */
     }
     getUser()
-  }, [game])
+  }, [game, userLogged])
 
   if (game === undefined || game === null) return null
   if (user === null) return null
@@ -43,10 +42,10 @@ const EditGame = ({ game, userLogged, onSubmitHandler }) => {
     const list = event.target.value
     // Elimina el juego de todas las listas
     Object.keys(userLists).forEach(
-      listI => ((listI !== 'favorites' && userLists[listI].includes(game.id)) ? userLists[listI].splice(userLists[listI].indexOf(game.id), 1) : null)
+      listI => (((listI !== 'favorites' || list === 'remove') && userLists[listI].includes(game.id)) ? userLists[listI].splice(userLists[listI].indexOf(game.id), 1) : null)
     )
     // Añade el juego a la nueva lista
-    userLists[list].push(game.id)
+    if (userLists[list]) userLists[list].push(game.id)
     const newUser = { ...user, gamesList: userLists }
     setSelectedList(list)
     setUserData(newUser)
@@ -78,7 +77,7 @@ const EditGame = ({ game, userLogged, onSubmitHandler }) => {
           <h2>{game.name}</h2>
           <form onSubmit={(e) => onSubmitMiddleware(e)} className='edit-game-form'>
             <InputList inputs={
-              Object.keys(userLists).map(list => {
+              [...Object.keys(userLists).map(list => {
                 return {
                   id: list,
                   name: variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display,
@@ -86,10 +85,17 @@ const EditGame = ({ game, userLogged, onSubmitHandler }) => {
                   isChecked: list !== 'favorites' ? selectedList === list : userLists.favorites.includes(game.id),
                   onChangeHandler: list === 'favorites' ? onFavoriteHandler : null
                 }
-              })
+              }), {
+                id: 'remove',
+                name: 'Remove game',
+                isRadio: true,
+                isChecked: selectedList === 'remove',
+                onChangeHandler: null
+              }]
             }
             fieldsetName="edit-game"
-            onChangeHandler={onListSelected} />
+            onChangeHandler={onListSelected}
+            disableInputs={selectedList === 'remove'} />
             <button type="submit">Add game</button>
             <button onClick={(e) => onSubmitHandler(e, null)}>Cancel</button>
           </form>

@@ -5,25 +5,7 @@ import CardGrid from '../common/CardGrid'
 
 import variables from '../../variables'
 
-/*
-const fillLists = async (lists) => {
-  const newObject = {}
-  const values = Object.values(lists).map(list => list.map(game => gameServices.getGameById(game)))
-  for (let i = 0; i < values.length; i++) {
-    const list = values[i]
-    const gamesInfo = await Promise.all(list)
-    const newList = await gameServices.getCoversFromArray(gamesInfo)
-    newObject[Object.keys(lists)[i]] = newList
-  }
-  return newObject
-} */
-
-const gridContext = {
-  NORMAL: 'normal',
-  USER_MINI_LIST: 'user-mini-list'
-}
-
-const UserProfile = ({ userProfile, gamesLists, onGameLoadHandler }) => {
+const UserProfile = ({ userProfile, gamesLists, onGameLoadHandler, onGameClickHandler }) => {
   const {
     userAvatar,
     userName,
@@ -42,12 +24,20 @@ const UserProfile = ({ userProfile, gamesLists, onGameLoadHandler }) => {
         <section className='user-profile-info'>
           <article className='user-profile-name'>
             <h2>{userName}</h2>
-            <p>{variables.LIVE_VARIABLES.GENRES[gender.toUpperCase()].display || 'Unknown'}</p>
+            <p>
+              {variables.LIVE_VARIABLES.GENRES[gender.toUpperCase()]
+                ? variables.LIVE_VARIABLES.GENRES[gender.toUpperCase()].display
+                : '-Unknown'}
+            </p>
           </article>
           <div className='user-profile-platform'>
             <h3>Platforms</h3>
             <div className='user-profile-platforms-container'>
-              {platforms.map(platform => <span key={platform}>{variables.LIVE_VARIABLES.PLATFORMS[platform.toUpperCase()].display ? variables.LIVE_VARIABLES.PLATFORMS[platform.toUpperCase()].display : `IDK MEN ${platform}`}</span>)}
+              {platforms.map(platform => <span key={platform}>
+                {variables.LIVE_VARIABLES.PLATFORMS[platform.toUpperCase()]
+                  ? variables.LIVE_VARIABLES.PLATFORMS[platform.toUpperCase()].display
+                  : `-${platform}`}
+                </span>)}
             </div>
           </div>
         </section>
@@ -60,8 +50,17 @@ const UserProfile = ({ userProfile, gamesLists, onGameLoadHandler }) => {
               ? Object.keys(gamesLists).map(list => {
                 return (
                   <div key={list} className='user-profile-games-list'>
-                    <strong>{variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display ? variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display : `IDK MEN ${list}`} {gamesLists[list].length}</strong>
-                    <CardGrid size={'small'} context={gridContext.USER_MINI_LIST} games={gamesLists[list]} onGameLoadHandler={onGameLoadHandler} cardsGroup={list} />
+                    <strong>
+                      {variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()]
+                        ? variables.LIVE_VARIABLES.GAME_LISTS[list.toUpperCase()].display
+                        : `-${list}`} {gamesLists[list].length}
+                    </strong>
+                    <CardGrid size={'small'}
+                     context={variables.GRID_CARD_CONTEXTS.USER_MINI_LIST}
+                     games={gamesLists[list]}
+                     onGameLoadHandler={onGameLoadHandler}
+                     cardsGroup={list}
+                     onGameClickHandler={onGameClickHandler}/>
                   </div>
                 )
               })
@@ -76,7 +75,8 @@ const UserProfile = ({ userProfile, gamesLists, onGameLoadHandler }) => {
 UserProfile.propTypes = {
   userProfile: PropTypes.object.isRequired,
   onGameLoadHandler: PropTypes.func.isRequired,
-  gamesLists: PropTypes.object.isRequired
+  gamesLists: PropTypes.object.isRequired,
+  onGameClickHandler: PropTypes.func.isRequired
 }
 
 export default UserProfile

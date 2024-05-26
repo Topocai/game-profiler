@@ -3,29 +3,20 @@ import PropTypes from 'prop-types'
 
 import '../styles/card-grid.css'
 
-const cardSizes = {
-  NORMAL: 'normal',
-  SMALL: 'small'
-}
+import variables from '../../variables'
 
-const gridContext = {
-  NORMAL: 'normal',
-  USER_MINI_LIST: 'user-mini-list',
-  USER_LIST: 'user-list'
-}
-
-const CardGrid = ({ children, context, games, size, onGameClickHandler, onGameLoadHandler, cardsGroup }) => {
+const CardGrid = ({ children, context, games, size, onGameClickHandler = undefined, onGameLoadHandler = undefined, cardsGroup = undefined }) => {
   if (games.length === 0) return null
-  if (size === undefined) size = cardSizes.NORMAL
-  if (context === undefined) context = gridContext.NORMAL
+  if (size === undefined) size = variables.CARD_SIZES.NORMAL
+  if (context === undefined) context = variables.GRID_CARD_CONTEXTS.NORMAL
 
   const gridStyle = {
-    gridTemplateColumns: size === cardSizes.SMALL
+    gridTemplateColumns: size === variables.CARD_SIZES.SMALL
       ? `repeat(${games.length}, 0.1fr)`
-      : `repeat(auto-fill, minmax(${context === gridContext.USER_LIST ? '120px' : '300px'}, 1fr))`
+      : `repeat(auto-fill, minmax(${context === variables.GRID_CARD_CONTEXTS.USER_LIST ? '120px' : '300px'}, 1fr))`
   }
 
-  const gridClass = `card-grid ${Object.values(gridContext).includes(context) ? context : 'normal'}`
+  const gridClass = `card-grid ${Object.values(variables.GRID_CARD_CONTEXTS).includes(context) ? context : 'normal'}`
 
   const cardProps = {
     size,
@@ -38,9 +29,8 @@ const CardGrid = ({ children, context, games, size, onGameClickHandler, onGameLo
     <article style={gridStyle} className={gridClass}>
       {children && children}
       {
-      context === gridContext.USER_MINI_LIST &&
-      games.map(game => {
-        const index = games.indexOf(game)
+      context === variables.GRID_CARD_CONTEXTS.USER_MINI_LIST &&
+      games.map((game, index) => {
         const cardStyle = {
           placeSelf: 'center',
           gridColumn: `1 / ${index + 2}`,
@@ -55,8 +45,8 @@ const CardGrid = ({ children, context, games, size, onGameClickHandler, onGameLo
       })
       }
       {
-        context !== gridContext.USER_MINI_LIST &&
-        games.map(game => {
+        context !== variables.GRID_CARD_CONTEXTS.USER_MINI_LIST &&
+        games.map((game, index) => {
           if (typeof (game) !== 'object') {
             return <SimpleGameCard key={game} game={game} cover={null} cardProps={cardProps} />
           } else {
@@ -70,8 +60,8 @@ const CardGrid = ({ children, context, games, size, onGameClickHandler, onGameLo
 
 CardGrid.propTypes = {
   children: PropTypes.node,
-  size: PropTypes.oneOf([cardSizes.NORMAL, cardSizes.SMALL]),
-  context: PropTypes.oneOf(Object.values(gridContext)),
+  size: PropTypes.oneOf(Object.values(variables.CARD_SIZES)),
+  context: PropTypes.oneOf(Object.values(variables.GRID_CARD_CONTEXTS)),
   games: PropTypes.array.isRequired,
   onGameClickHandler: PropTypes.func,
   onGameLoadHandler: PropTypes.func,

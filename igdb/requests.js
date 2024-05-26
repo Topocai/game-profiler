@@ -1,8 +1,8 @@
-const BASE_FIELDS = 'name,id,url,first_release_date,summary,genres'
+const BASE_FIELDS = 'name,id,url,first_release_date,summary,genres,similar_games'
 
 const IGDBUrl = 'https://api.igdb.com/v4/'
 
-const BaseRequest = async (bearerAccessToken, type, { fields = '*', limit = 10, condition, search, sort }) => {
+const BaseRequest = async (bearerAccessToken, type, { fields = '*', limit = 10, condition, search, sort, context = undefined }) => {
   let bodyField = `fields ${fields}${type === 'games' ? ',parent_game' : ''}; limit ${limit};`
   bodyField += sort ? ` sort ${sort};` : ''
   bodyField += condition ? ` where ${condition};` : ''
@@ -26,7 +26,7 @@ const BaseRequest = async (bearerAccessToken, type, { fields = '*', limit = 10, 
     const data = await response.json()
     const resolveData = data
 
-    if (type === 'games') {
+    if (type === 'games' && context !== 'by_id') {
       if (data[0].parent_game) {
         const parentGame = await GetGameById(bearerAccessToken, data[0].parent_game, { queryFields: BASE_FIELDS })
         if (parentGame !== undefined) {
@@ -44,7 +44,7 @@ const BaseRequest = async (bearerAccessToken, type, { fields = '*', limit = 10, 
 
 const GetGameById = async (bearerAccessToken, gameId, { queryFields }) => {
   const fields = queryFields ? queryFields + `,${BASE_FIELDS}` : BASE_FIELDS
-  const queryResult = await BaseRequest(bearerAccessToken, 'games', { fields, condition: `id = ${gameId}`, limit: 1 })
+  const queryResult = await BaseRequest(bearerAccessToken, 'games', { fields, condition: `id = ${gameId}`, limit: 1, context: 'by_id' })
   return queryResult[0]
 }
 
@@ -56,9 +56,9 @@ const GetGames = async (bearerAccessToken, { queryFields, limit, conditions, sor
   return queryResult
 }
 
-const GetGameByName = async (bearerAccessToken, name) => {
+const GetGameByName = async (bearerAccessToken, name, { conditions }) => {
   console.log('Get by name:', name)
-  const queryResult = await BaseRequest(bearerAccessToken, 'games', { fields: `${BASE_FIELDS}, aggregated_rating`, search: name, limit: 6 })
+  const queryResult = await BaseRequest(bearerAccessToken, 'games', { fields: `${BASE_FIELDS}, aggregated_rating`, search: name, limit: 6, condition: conditions })
 
   return queryResult
 }
